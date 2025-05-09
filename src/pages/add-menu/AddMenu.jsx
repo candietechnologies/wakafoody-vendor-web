@@ -18,6 +18,7 @@ import Wrapper from "../../components/Wrapper";
 import CustomSelect from "../../components/CustomSelect";
 import AddCollectionModal from "../../components/AddCollection";
 import AddMenuOptionModal from "../../components/AddMenuOption";
+import AddPack from "../../components/AddPack";
 
 const AddMenu = ({
   collections = [],
@@ -31,6 +32,7 @@ const AddMenu = ({
 }) => {
   const collectionProps = useDisclosure();
   const menuOption = useDisclosure();
+  const packProps = useDisclosure();
 
   const [form, setForm] = useState({
     image: null,
@@ -62,6 +64,7 @@ const AddMenu = ({
 
   return (
     <Wrapper title="Add Menu">
+      <AddPack isOpen={packProps.isOpen} onClose={packProps.onClose} />
       <AddCollectionModal
         isOpen={collectionProps.isOpen}
         onClose={collectionProps.onClose}
@@ -170,7 +173,7 @@ const AddMenu = ({
               options={packs}
               onChange={handleInputChange}
               onAddNew={onAddNewPack}
-              showAddNew
+              onClick={packProps.onOpen}
             />
 
             <FormControl display="flex" alignItems="center">

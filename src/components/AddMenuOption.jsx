@@ -13,9 +13,11 @@ import {
   Input,
   Select,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import CustomSelect from "./CustomSelect";
 import InputComponent from "./Input";
+import AddOption from "./AddOption";
 
 const AddMenuOptionModal = ({
   existingOptions = [],
@@ -26,6 +28,7 @@ const AddMenuOptionModal = ({
   const [optionName, setOptionName] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const toast = useToast();
+  const optionProps = useDisclosure();
 
   const handleSubmit = () => {
     if (!optionName.trim() || !selectedOption) {
@@ -50,6 +53,7 @@ const AddMenuOptionModal = ({
 
   return (
     <>
+      <AddOption isOpen={optionProps.isOpen} onClose={optionProps.onClose} />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
@@ -58,7 +62,12 @@ const AddMenuOptionModal = ({
           <ModalBody>
             <InputComponent label="Name" />
 
-            <CustomSelect label="Options" options={[]} />
+            <CustomSelect
+              label="Options"
+              options={[]}
+              visible={true}
+              onClick={optionProps.onOpen}
+            />
           </ModalBody>
 
           <ModalFooter>

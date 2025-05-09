@@ -1,10 +1,20 @@
 import React from "react";
 import Wrapper from "../../components/Wrapper";
-import { Flex } from "@chakra-ui/react";
+import {
+  Flex,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+} from "@chakra-ui/react";
 import MenuOverview from "./MenuOverview";
 import SearchAndFilter from "../../components/SearchAndFilter";
 import MenuList from "./MenuList";
 import { useNavigate } from "react-router-dom";
+import MenuOptionList from "./MenuOptionList";
+import OptionList from "./OptionList";
+import PackList from "./PackList";
 
 const sampleMenus = [
   {
@@ -67,7 +77,43 @@ export default function Menus() {
           title="Add Menu"
           onClick={() => navigate("/menus/add")}
         />
-        <MenuList menus={sampleMenus} />
+        <Tabs w="100%" variant="soft-rounded" colorScheme="orange">
+          <TabList>
+            <Tab>Menus</Tab>
+            <Tab>Menu Options</Tab>
+            <Tab>Options</Tab>
+            <Tab>Packs</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <MenuList menus={sampleMenus} />
+            </TabPanel>
+            <TabPanel>
+              <MenuOptionList
+                menuOptions={[
+                  { name: "Spice Level", count: 3 },
+                  { name: "Protein Type", count: 4 },
+                ]}
+              />
+            </TabPanel>
+            <TabPanel>
+              <OptionList
+                options={[
+                  { name: "Extra Cheese", price: 500 },
+                  { name: "No Onions", price: 0 },
+                ]}
+              />
+            </TabPanel>
+            <TabPanel>
+              <PackList
+                options={[
+                  { name: "Extra Cheese", price: 500 },
+                  { name: "No Onions", price: 0 },
+                ]}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Flex>
     </Wrapper>
   );

@@ -10,6 +10,7 @@ import {
   Box,
   Text,
   useColorModeValue,
+  Button,
 } from "@chakra-ui/react";
 
 const statusColor = {
@@ -34,6 +35,7 @@ const MenuList = ({ menus }) => {
           <Th isNumeric>Total Sold</Th>
           <Th>Date Created</Th>
           <Th isNumeric>Discount (%)</Th>
+          <Th>Action</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -50,6 +52,11 @@ const MenuList = ({ menus }) => {
             <Td isNumeric>{menu.totalSold}</Td>
             <Td>{formatDate(menu.dateCreated)}</Td>
             <Td isNumeric>{menu.discount}%</Td>
+            <Td>
+              <Button size="sm" colorScheme="orange">
+                Edit
+              </Button>
+            </Td>
           </Tr>
         ))}
       </Tbody>
