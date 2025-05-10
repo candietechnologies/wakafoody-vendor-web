@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  Flex,
 } from "@chakra-ui/react";
 import InputComponent from "./Input";
 import { z } from "zod";
@@ -17,13 +18,14 @@ import { toast } from "react-toastify";
 import { usePost } from "../hooks/usePost";
 import { useRestaurant } from "../context/restaurant";
 import { url } from "../utils/lib";
+import { usePatch } from "../hooks/usePatch";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Option name is required" }),
   price: z.string().min(1, { message: "Option price is required" }),
 });
 
-const AddOption = ({ isOpen, onClose }) => {
+const AddOption = ({ isOpen, onClose, option }) => {
   const { activeRestaurant } = useRestaurant();
   const restaurantId = activeRestaurant?._id;
   const {
@@ -36,7 +38,13 @@ const AddOption = ({ isOpen, onClose }) => {
   });
 
   const handleSuccess = async () => {
-    toast.success("Collection Added");
+    toast.success("Option Added");
+    onClose();
+    reset();
+  };
+
+  const handleSuccessUpdate = async () => {
+    toast.success("Option Updated");
     onClose();
     reset();
   };
@@ -48,9 +56,24 @@ const AddOption = ({ isOpen, onClose }) => {
     onSuccess: handleSuccess,
   });
 
+  const updateHandler = usePatch({
+    url: `${url}/v1/option/${option?._id}?restaurant=${restaurantId}`,
+    queryKey: `options-${restaurantId}`,
+    title: "Option Updated",
+    onSuccess: handleSuccessUpdate,
+  });
+
   const onSubmit = (data) => {
-    optionHandler.mutate({ ...data, restaurant: restaurantId });
+    const payload = { ...data, restaurant: restaurantId };
+    if (option) return updateHandler.mutate(payload);
+    optionHandler.mutate(payload);
   };
+
+  useEffect(() => {
+    if (option) {
+      reset(option);
+    }
+  }, [option, reset]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -59,20 +82,22 @@ const AddOption = ({ isOpen, onClose }) => {
         <ModalHeader>Add Option</ModalHeader>
         <ModalCloseButton />
         <ModalBody gap="1rem">
-          <InputComponent
-            label="Option Name"
-            placeholder="e.g., Chicken"
-            register={register}
-            name="name"
-            info={errors.name?.message ? errors.name.message : null}
-          />
-          <InputComponent
-            label="Price"
-            placeholder="1,500"
-            register={register}
-            name="price"
-            info={errors.price?.message ? errors.price.message : null}
-          />
+          <Flex w="100%" align="start" gap="1rem" direction="column">
+            <InputComponent
+              label="Option Name"
+              placeholder="e.g., Chicken"
+              register={register}
+              name="name"
+              info={errors.name?.message ? errors.name.message : null}
+            />
+            <InputComponent
+              label="Price"
+              placeholder="1,500"
+              register={register}
+              name="price"
+              info={errors.price?.message ? errors.price.message : null}
+            />
+          </Flex>
         </ModalBody>
 
         <ModalFooter>
@@ -83,10 +108,10 @@ const AddOption = ({ isOpen, onClose }) => {
             bg="brand.100"
             color="#fff"
             colorScheme="orange"
-            isLoading={optionHandler.isPending}
-            isDisabled={optionHandler.isPending}
+            isLoading={optionHandler.isPending || updateHandler.isPending}
+            isDisabled={optionHandler.isPending || updateHandler.isPending}
             onClick={handleSubmit(onSubmit)}>
-            Add
+            {option ? "Save" : "Add"}
           </Button>
         </ModalFooter>
       </ModalContent>

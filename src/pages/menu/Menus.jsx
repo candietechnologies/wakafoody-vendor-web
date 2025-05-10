@@ -66,11 +66,11 @@ export default function Menus() {
     `stats-${restaurantId}`
   );
 
-  const { data: categoryData, isPending: isCategoryPending } = useGet(
+  const { data: categoryData } = useGet(
     `${url}/v1/category/vendor`,
     `categories`
   );
-  const { data: collectionData, isPending: isCollectionLoading } = useGet(
+  const { data: collectionData } = useGet(
     `${url}/v1/collection?restaurant=${restaurantId}`,
     `collection-${restaurantId}`
   );
@@ -164,16 +164,63 @@ export default function Menus() {
         />
 
         <Tabs
-          variant="soft-rounded"
+          variant="unstyled"
           colorScheme="orange"
           size={{ base: "sm", md: "md" }}
-          overflowX="auto"
           w="100%">
           <TabList mb="0.5rem">
-            <Tab>Menus</Tab>
-            <Tab>Menu Options</Tab>
-            <Tab>Options</Tab>
-            <Tab>Packs</Tab>
+            <Tab
+              _selected={{ bg: "#FF4500", color: "white" }}
+              bg="white"
+              color="#FF4500"
+              borderRadius="5px"
+              flex="1"
+              py="2"
+              fontSize={{ lg: "16px", base: "14px" }}
+              fontWeight="medium"
+              border="1px solid #FF4500"
+              textAlign="center">
+              Menus
+            </Tab>
+            <Tab
+              _selected={{ bg: "#FF4500", color: "white" }}
+              bg="white"
+              color="#FF4500"
+              borderRadius="5px"
+              flex="1"
+              py="2"
+              fontSize={{ lg: "16px", base: "14px" }}
+              fontWeight="medium"
+              border="1px solid #FF4500"
+              textAlign="center">
+              Menu Options
+            </Tab>
+            <Tab
+              _selected={{ bg: "#FF4500", color: "white" }}
+              bg="white"
+              color="#FF4500"
+              borderRadius="5px"
+              flex="1"
+              py="2"
+              fontSize={{ lg: "16px", base: "14px" }}
+              fontWeight="medium"
+              border="1px solid #FF4500"
+              textAlign="center">
+              Options
+            </Tab>
+            <Tab
+              _selected={{ bg: "#FF4500", color: "white" }}
+              bg="white"
+              color="#FF4500"
+              borderRadius="5px"
+              flex="1"
+              py="2"
+              fontSize={{ lg: "16px", base: "14px" }}
+              fontWeight="medium"
+              border="1px solid #FF4500"
+              textAlign="center">
+              Packs
+            </Tab>
           </TabList>
 
           <TabPanels>
@@ -193,7 +240,10 @@ export default function Menus() {
               {isMenuOptionLoading ? (
                 <MenuOptionListSkeleton />
               ) : (
-                <MenuOptionList menuOptions={menuOptionList} />
+                <MenuOptionList
+                  options={optionList}
+                  menuOptions={menuOptionList}
+                />
               )}
             </TabPanel>
 

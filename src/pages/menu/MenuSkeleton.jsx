@@ -17,7 +17,7 @@ const MenuListSkeleton = () => {
   const skeletonRows = Array.from({ length: 6 }); // Adjust row count as needed
 
   return (
-    <Table variant="simple" size="md">
+    <Table bg="white" variant="simple" size="md">
       <Thead bg={useColorModeValue("gray.100", "gray.700")}>
         <Tr>
           <Th>S/N</Th>

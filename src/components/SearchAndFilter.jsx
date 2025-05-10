@@ -12,8 +12,6 @@ import {
 } from "@chakra-ui/react";
 import { FiSearch, FiFilter } from "react-icons/fi";
 
-const FILTERS = ["all", "available", "sold out"];
-
 const SearchAndFilter = ({
   setSearchTerm,
   searchTerm,
@@ -21,6 +19,9 @@ const SearchAndFilter = ({
   onClick,
   setActiveFilter,
   activeFilter,
+  FILTERS = ["all", "available", "sold out"],
+  placeholder,
+  component,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -34,7 +35,7 @@ const SearchAndFilter = ({
           <Icon as={FiSearch} color="gray.400" />
         </InputLeftElement>
         <Input
-          placeholder="Search menu items..."
+          placeholder={placeholder || "Search menu items..."}
           value={searchTerm}
           onChange={handleSearchChange}
           bg={useColorModeValue("white", "gray.800")}
@@ -62,9 +63,11 @@ const SearchAndFilter = ({
           ))}
         </HStack>
 
-        <Button onClick={onClick} color="brand.100" size="md">
-          {title}
-        </Button>
+        {component || (
+          <Button onClick={onClick} color="brand.100" size="md">
+            {title}
+          </Button>
+        )}
       </Flex>
     </Box>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  Flex,
 } from "@chakra-ui/react";
 import InputComponent from "./Input";
 import { z } from "zod";
@@ -17,13 +18,14 @@ import { toast } from "react-toastify";
 import { usePost } from "../hooks/usePost";
 import { useRestaurant } from "../context/restaurant";
 import { url } from "../utils/lib";
+import { usePatch } from "../hooks/usePatch";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Pack name is required" }),
   price: z.string().min(1, { message: "Pack price is required" }),
 });
 
-const AddPack = ({ isOpen, onClose }) => {
+const AddPack = ({ isOpen, onClose, pack }) => {
   const { activeRestaurant } = useRestaurant();
   const restaurantId = activeRestaurant?._id;
   const {
@@ -41,6 +43,12 @@ const AddPack = ({ isOpen, onClose }) => {
     reset();
   };
 
+  const handleSuccessUpdate = async () => {
+    toast.success("Pack Updated");
+    onClose();
+    reset();
+  };
+
   const packHandler = usePost({
     url: `${url}/v1/pack`,
     queryKey: `packs-${restaurantId}`,
@@ -48,9 +56,24 @@ const AddPack = ({ isOpen, onClose }) => {
     onSuccess: handleSuccess,
   });
 
+  const updateHandler = usePatch({
+    url: `${url}/v1/pack/${pack?._id}?restaurant=${restaurantId}`,
+    queryKey: `packs-${restaurantId}`,
+    title: "Pack Updated",
+    onSuccess: handleSuccessUpdate,
+  });
+
   const onSubmit = (data) => {
-    packHandler.mutate({ ...data, restaurant: restaurantId });
+    const payload = { ...data, restaurant: restaurantId };
+    if (pack) return updateHandler.mutate(payload);
+    packHandler.mutate(payload);
   };
+
+  useEffect(() => {
+    if (pack) {
+      reset(pack);
+    }
+  }, [pack, reset]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -59,20 +82,22 @@ const AddPack = ({ isOpen, onClose }) => {
         <ModalHeader>Add Pack</ModalHeader>
         <ModalCloseButton />
         <ModalBody gap="1rem">
-          <InputComponent
-            label="Pack Name"
-            placeholder="e.g., Takeaway"
-            register={register}
-            name="name"
-            info={errors.name?.message ? errors.name.message : null}
-          />
-          <InputComponent
-            label="Price"
-            placeholder="1,500"
-            register={register}
-            name="price"
-            info={errors.price?.message ? errors.price.message : null}
-          />
+          <Flex w="100%" align="start" gap="1rem" direction="column">
+            <InputComponent
+              label="Pack Name"
+              placeholder="e.g., Takeaway"
+              register={register}
+              name="name"
+              info={errors.name?.message ? errors.name.message : null}
+            />
+            <InputComponent
+              label="Price"
+              placeholder="1,500"
+              register={register}
+              name="price"
+              info={errors.price?.message ? errors.price.message : null}
+            />
+          </Flex>
         </ModalBody>
 
         <ModalFooter>
@@ -83,10 +108,10 @@ const AddPack = ({ isOpen, onClose }) => {
             bg="brand.100"
             color="#fff"
             colorScheme="orange"
-            isLoading={packHandler.isPending}
-            isDisabled={packHandler.isPending}
+            isLoading={packHandler.isPending || updateHandler.isPending}
+            isDisabled={packHandler.isPending || updateHandler.isPending}
             onClick={handleSubmit(onSubmit)}>
-            Add
+            {pack ? "Save" : "Add"}
           </Button>
         </ModalFooter>
       </ModalContent>

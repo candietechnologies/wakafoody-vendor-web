@@ -17,7 +17,6 @@ const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   price: z.string().min(1, { message: "Price is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  discount: z.any(),
 });
 
 import InputComponent from "../../components/Input";
@@ -38,11 +37,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { usePost } from "../../hooks/usePost";
 import { uploadUrl } from "../../utils/lib";
+import { getQueryVariable } from "../../utils/util";
+import { usePatch } from "../../hooks/usePatch";
 
 const AddMenu = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { activeRestaurant } = useRestaurant();
+  const menuId = getQueryVariable("id");
 
   const bg = useColorModeValue("white", "gray.800");
   const borderBg = useColorModeValue("gray.200", "gray.700");
@@ -60,6 +62,11 @@ const AddMenu = () => {
   const [payload, setPayload] = useState("");
 
   const restaurantId = activeRestaurant?._id;
+
+  const { data: menuData, isPending: isMenuPending } = useGet(
+    `${url}/v1/menu/${menuId}/view?restaurant=${restaurantId}`,
+    `menu-${menuId}`
+  );
 
   const { data, isPending } = useGet(`${url}/v1/category/vendor`, `categories`);
   const { data: collectionData, isPending: isCollectionLoading } = useGet(
@@ -82,6 +89,8 @@ const AddMenu = () => {
     `packs-${restaurantId}`
   );
 
+  console.log(menuData?.data);
+
   const {
     register,
     handleSubmit,
@@ -91,20 +100,31 @@ const AddMenu = () => {
     resolver: zodResolver(schema),
   });
 
+  function handleSuccessMenu() {
+    navigate("/menus");
+    reset();
+    setCategory("");
+    setCollection("");
+    setPacks([]);
+    setMenuOptions([]);
+    setFile("");
+  }
+
   const menuHandler = usePost({
     url: `${url}/v1/menu`,
     queryKey: `menu-${restaurantId}`,
     title: "Menu added",
     onSuccess: () => {
       toast.success("Menu added");
-      navigate("/menus");
-      reset();
-      setCategory("");
-      setCollection("");
-      setPacks([]);
-      setMenuOptions([]);
-      setFile("");
+      handleSuccessMenu();
     },
+  });
+
+  const updateHandler = usePatch({
+    url: `${url}/v1/menu/${menuData?.data?._id}`,
+    queryKey: `menu-${restaurantId}`,
+    title: "Menu updated",
+    onSuccess: handleSuccessMenu,
   });
 
   const handleSuccess = (data) => {
@@ -112,6 +132,10 @@ const AddMenu = () => {
       ...payload,
       image: data?.data,
     };
+    if (menuId) {
+      updateHandler.mutate(payloadData);
+      return;
+    }
     menuHandler.mutate(payloadData);
   };
 
@@ -122,6 +146,8 @@ const AddMenu = () => {
     onError: () => {},
     contentType: "multipart/form-data",
   });
+
+  const fileType = typeof file;
 
   const categories = data?.data || [];
   const collections = collectionData?.data || [];
@@ -151,10 +177,15 @@ const AddMenu = () => {
 
     setPayload(payload);
 
-    const formData = new FormData();
-    formData.append("image", file);
+    if (fileType !== "string") {
+      const formData = new FormData();
+      formData.append("image", file);
 
-    uploadHandler.mutate(formData);
+      uploadHandler.mutate(formData);
+      return;
+    }
+
+    updateHandler.mutate(payload);
   };
 
   // Invalidate queries on restaurant change
@@ -171,12 +202,44 @@ const AddMenu = () => {
     keys.forEach((key) => queryClient.invalidateQueries({ queryKey: [key] }));
   }, [restaurantId, queryClient]);
 
+  useEffect(() => {
+    if (menuId) {
+      reset({
+        name: menuData?.data?.name,
+        discount: menuData?.data?.discount,
+        price: menuData?.data?.price,
+        description: menuData?.data?.description,
+      });
+      setCategory({ label: menuData?.data?.category });
+      setCollection({ label: menuData?.data?.collectionName });
+      setInStock(menuData?.data?.inStock);
+      setFile(menuData?.data?.image);
+      setMenuOptions(
+        menuData?.data?.options?.map((el) => {
+          return {
+            label: el.name,
+            value: el._id,
+          };
+        })
+      );
+      setPacks(
+        menuData?.data?.packs?.map((el) => {
+          return {
+            label: `${el.name} (${el.price})`,
+            value: el._id,
+          };
+        })
+      );
+    }
+  }, [menuData, menuId, reset]);
+
   if (
     isPending ||
     isCollectionLoading ||
     isOptionLoading ||
     isMenuOptionLoading ||
-    isPackLoading
+    isPackLoading ||
+    (isMenuPending && menuId)
   )
     return <Spinner />;
 
@@ -201,7 +264,7 @@ const AddMenu = () => {
         borderColor={borderBg}
         rounded="lg">
         <Heading size="md" mb={4}>
-          Add New Menu Item
+          {menuId ? "Edit" : "Add New"} Menu
         </Heading>
 
         <form className="p-[1rem]" onSubmit={handleSubmit(onSubmit)}>
@@ -212,7 +275,7 @@ const AddMenu = () => {
               <Input type="file" accept="image/*" onChange={handleFileChange} />
               {file && (
                 <Image
-                  src={URL.createObjectURL(file)}
+                  src={fileType === "string" ? file : URL.createObjectURL(file)}
                   alt="Preview"
                   mt={2}
                   boxSize="100px"
@@ -227,7 +290,7 @@ const AddMenu = () => {
               name="category"
               value={category}
               options={categories.map((el) => {
-                return { label: el.name, value: el._id };
+                return { label: el.name, value: el.name };
               })}
               onChange={(e) => setCategory(e)}
               visible={false}
@@ -240,7 +303,7 @@ const AddMenu = () => {
               name="collection"
               value={collection}
               options={collections.map((el) => {
-                return { label: el.name, value: el._id };
+                return { label: el.name, value: el.name };
               })}
               onChange={(e) => setCollection(e)}
               onClick={collectionProps.onOpen}
@@ -277,14 +340,6 @@ const AddMenu = () => {
               placeholder="1,500"
               required={true}
               info={errors.price?.message ? errors.price.message : null}
-            />
-
-            <InputComponent
-              label="Discount (%)"
-              name="discount"
-              type="number"
-              register={register}
-              placeholder="10"
             />
 
             <CustomSelect
@@ -331,13 +386,21 @@ const AddMenu = () => {
             </FormControl>
 
             <Button
-              isLoading={uploadHandler.isPending || menuHandler.isPending}
-              isDisabled={uploadHandler.isPending || menuHandler.isPending}
+              isLoading={
+                uploadHandler.isPending ||
+                menuHandler.isPending ||
+                updateHandler.isPending
+              }
+              isDisabled={
+                uploadHandler.isPending ||
+                menuHandler.isPending ||
+                updateHandler.isPending
+              }
               bg="brand.100"
               color="#fff"
               colorScheme="orange"
               type="submit">
-              Add Menu
+              {menuId ? "Edit Menu" : "Add Menu"}
             </Button>
           </VStack>
         </form>

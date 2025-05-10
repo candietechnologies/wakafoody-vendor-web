@@ -15,6 +15,7 @@ const Login = lazy(() => import("./pages/login/Login"));
 const Home = lazy(() => import("./pages/home/Home"));
 const Menu = lazy(() => import("./pages/menu/Menus"));
 const AddMenu = lazy(() => import("./pages/add-menu/AddMenu"));
+const Orders = lazy(() => import("./pages/orders/Order"));
 
 const routes = createRoutesFromElements(
   <Route>
@@ -23,6 +24,8 @@ const routes = createRoutesFromElements(
     <Route path="/" element={<Home />} />
     <Route path="/menus" element={<Menu />} />
     <Route path="/menus/add" element={<AddMenu />} />
+
+    <Route path="/orders" element={<Orders />} />
   </Route>
 );
 

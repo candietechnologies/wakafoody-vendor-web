@@ -8,19 +8,13 @@ import {
   Th,
   Td,
   Skeleton,
-  SkeletonText,
-  useColorModeValue,
 } from "@chakra-ui/react";
 
 const OptionSkeleton = () => {
   const skeletonRows = Array.from({ length: 6 }); // Adjust row count as needed
 
   return (
-    <Box
-      w="100%"
-      bg={useColorModeValue("white", "gray.800")}
-      borderRadius="md"
-      boxShadow="md">
+    <Box w="100%" bg="white" borderRadius="md" boxShadow="md">
       <Table variant="simple">
         <Thead>
           <Tr>
