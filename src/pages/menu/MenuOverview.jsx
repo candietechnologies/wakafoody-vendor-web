@@ -8,10 +8,11 @@ import {
   SimpleGrid,
   useColorModeValue,
   Icon,
+  Skeleton,
 } from "@chakra-ui/react";
 import { FiList, FiXCircle, FiCheckCircle } from "react-icons/fi";
 
-const StatCard = ({ label, value, icon, color }) => {
+const StatCard = ({ label, value, icon, color, isLoading }) => {
   return (
     <Stat
       flex="1"
@@ -28,7 +29,7 @@ const StatCard = ({ label, value, icon, color }) => {
             {label}
           </StatLabel>
           <StatNumber fontSize="2xl" fontWeight="bold">
-            {value}
+            {isLoading ? <Skeleton height="20px" width="80px" /> : value}
           </StatNumber>
         </Box>
         <Icon as={icon} boxSize={8} color={color} />
@@ -37,17 +38,25 @@ const StatCard = ({ label, value, icon, color }) => {
   );
 };
 
-const MenuOverview = ({ total, soldOut, available }) => {
+const MenuOverview = ({ total, soldOut, available, isLoading }) => {
   return (
     <SimpleGrid w="100%" columns={{ base: 1, md: 3 }} spacing={6}>
-      <StatCard label="Total" value={total} icon={FiList} color="blue.500" />
       <StatCard
+        isLoading={isLoading}
+        label="Total"
+        value={total}
+        icon={FiList}
+        color="blue.500"
+      />
+      <StatCard
+        isLoading={isLoading}
         label="Sold Out"
         value={soldOut}
         icon={FiXCircle}
         color="red.500"
       />
       <StatCard
+        isLoading={isLoading}
         label="Available"
         value={available}
         icon={FiCheckCircle}

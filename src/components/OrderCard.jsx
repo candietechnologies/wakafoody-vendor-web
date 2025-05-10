@@ -34,20 +34,22 @@ const OrderCard = ({ order, onAccept, onDecline }) => {
       transition="all 0.3s ease"
       _hover={{ transform: "scale(1.02)" }}>
       <VStack align="start" spacing={3}>
-        <Text fontSize="xl" fontWeight="bold">
+        <Text style={{ fontFamily: "Poppins" }} fontSize="xl" fontWeight="bold">
           Order #{order.id}
         </Text>
 
-        <Text>
+        <Text style={{ fontFamily: "Poppins" }}>
           <strong>Customer:</strong> {order.customerName}
         </Text>
 
-        <Text>
+        <Text style={{ fontFamily: "Poppins" }}>
           <strong>Items:</strong>
         </Text>
         <VStack align="start" spacing={1} pl={2}>
           {order.items.map((item, idx) => (
-            <Text key={idx}>• {item}</Text>
+            <Text style={{ fontFamily: "Poppins" }} key={idx}>
+              • {item}
+            </Text>
           ))}
         </VStack>
 
@@ -59,16 +61,21 @@ const OrderCard = ({ order, onAccept, onDecline }) => {
             fontSize="0.9em"
             px={3}
             py={1}
+            style={{ fontFamily: "Poppins" }}
             rounded="md">
             {order.status.toUpperCase()}
           </Badge>
 
           {order.status === "paid" && (
             <HStack>
-              <Button colorScheme="green" onClick={() => onAccept(order.id)}>
+              <Button
+                style={{ fontFamily: "Poppins" }}
+                colorScheme="green"
+                onClick={() => onAccept(order.id)}>
                 Accept
               </Button>
               <Button
+                style={{ fontFamily: "Poppins" }}
                 colorScheme="red"
                 variant="outline"
                 onClick={() => onDecline(order.id)}>

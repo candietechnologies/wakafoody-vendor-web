@@ -37,6 +37,7 @@ export default function InputComponent({
           isRequired={required}
           bg="#FFF0E6"
           border="none"
+          textTransform="lowercase"
           {...(register && name ? register(name) : {})}
         />
       )}

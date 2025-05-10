@@ -10,7 +10,11 @@ export default function Wrapper({ children }) {
       <Header />
       <Flex p="1rem" w="100%" align="center" gap="1rem">
         <SideBar />
-        <Flex flex="1" h="100vh" overflowY="scroll" bg="white">
+        <Flex
+          flex="1"
+          h={{ lg: "100vh", base: "100%" }}
+          overflowY="scroll"
+          bg="white">
           {children}
         </Flex>
         <OrdersBar />

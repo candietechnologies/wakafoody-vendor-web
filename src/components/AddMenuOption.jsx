@@ -8,47 +8,56 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-  useToast,
   useDisclosure,
 } from "@chakra-ui/react";
 import CustomSelect from "./CustomSelect";
 import InputComponent from "./Input";
 import AddOption from "./AddOption";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { usePost } from "../hooks/usePost";
+import { url } from "../utils/lib";
+import { toast } from "react-toastify";
 
-const AddMenuOptionModal = ({
-  existingOptions = [],
-  onAdd,
-  isOpen,
-  onClose,
-}) => {
-  const [optionName, setOptionName] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const toast = useToast();
+const schema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+});
+
+const AddMenuOptionModal = ({ options, restaurantId, isOpen, onClose }) => {
+  const [option, setOption] = useState([]);
   const optionProps = useDisclosure();
 
-  const handleSubmit = () => {
-    if (!optionName.trim() || !selectedOption) {
-      toast({
-        title: "Both fields are required.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
-    onAdd({
-      name: optionName.trim(),
-      base: selectedOption,
-    });
-
-    setOptionName("");
-    setSelectedOption("");
+  const handleSuccess = async () => {
+    toast.success("Menu option Added");
     onClose();
+    reset();
+    setOption([]);
+  };
+
+  const menuOptionHandler = usePost({
+    url: `${url}/v1/menu-options`,
+    queryKey: `menu-option-${restaurantId}`,
+    title: "Menu option Added",
+    onSuccess: handleSuccess,
+  });
+
+  const onSubmit = (data) => {
+    if (option.length === 0) return toast.warn("Select options");
+    menuOptionHandler.mutate({
+      ...data,
+      restaurant: restaurantId,
+      options: option.map((el) => el.value),
+    });
   };
 
   return (
@@ -60,13 +69,28 @@ const AddMenuOptionModal = ({
           <ModalHeader>Add Menu Option</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <InputComponent label="Name" />
+            <InputComponent
+              register={register}
+              name="name"
+              label="Name"
+              info={errors.name?.message ? errors.name.message : null}
+              placeholder="E.G Protein"
+            />
 
             <CustomSelect
               label="Options"
-              options={[]}
+              options={options.map((el) => {
+                return {
+                  label: `${el.name} (${el.price})`,
+                  value: el._id,
+                };
+              })}
               visible={true}
+              onChange={(e) => setOption(e)}
+              value={option}
               onClick={optionProps.onOpen}
+              custom
+              multiple
             />
           </ModalBody>
 
@@ -78,7 +102,12 @@ const AddMenuOptionModal = ({
               onClick={onClose}>
               Cancel
             </Button>
-            <Button bg="brand.100" color="#fff" onClick={handleSubmit}>
+            <Button
+              bg="brand.100"
+              color="#fff"
+              isLoading={menuOptionHandler.isPending}
+              isDisabled={menuOptionHandler.isPending}
+              onClick={handleSubmit(onSubmit)}>
               Add
             </Button>
           </ModalFooter>

@@ -11,29 +11,27 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { formatTime } from "../../utils/formatTime";
+import { formatDate } from "../../utils/format-date";
 
 const MenuOptionList = ({ menuOptions = [], onView }) => {
   return (
     <Box
-      p={6}
       w="100%"
       bg={useColorModeValue("white", "gray.800")}
       borderRadius="md"
       boxShadow="md">
-      <Text fontSize="xl" fontWeight="bold" mb={4}>
-        Menu Options
-      </Text>
-
       <Table w="100%" variant="simple">
-        <Thead>
+        <Thead bg={useColorModeValue("gray.100", "gray.700")}>
           <Tr>
             <Th>Name</Th>
             <Th isNumeric>Number of Choices</Th>
+            <Th>Date Created</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {menuOptions.length === 0 ? (
+          {menuOptions?.length === 0 ? (
             <Tr>
               <Td colSpan={3}>
                 <Text textAlign="center" color="gray.500">
@@ -42,10 +40,15 @@ const MenuOptionList = ({ menuOptions = [], onView }) => {
               </Td>
             </Tr>
           ) : (
-            menuOptions.map((opt, idx) => (
+            menuOptions?.map((opt, idx) => (
               <Tr key={idx}>
-                <Td>{opt.name}</Td>
-                <Td isNumeric>{opt.count}</Td>
+                <Td textTransform="capitalize">{opt.name}</Td>
+                <Td textAlign="center" isNumeric>
+                  {opt?.options?.length}
+                </Td>
+                <Td>
+                  {formatDate(opt.createdAt)}, {formatTime(opt.createdAt)}
+                </Td>
                 <Td>
                   <Button
                     size="sm"

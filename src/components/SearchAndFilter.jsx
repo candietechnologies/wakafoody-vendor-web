@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Input,
@@ -14,19 +14,17 @@ import { FiSearch, FiFilter } from "react-icons/fi";
 
 const FILTERS = ["all", "available", "sold out"];
 
-const SearchAndFilter = ({ onSearch, onFilterChange, title, onClick }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  const handleFilterClick = (filter) => {
-    setActiveFilter(filter);
-    onFilterChange(filter);
-  };
-
+const SearchAndFilter = ({
+  setSearchTerm,
+  searchTerm,
+  title,
+  onClick,
+  setActiveFilter,
+  activeFilter,
+}) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    onSearch(value);
   };
 
   return (
@@ -43,12 +41,17 @@ const SearchAndFilter = ({ onSearch, onFilterChange, title, onClick }) => {
         />
       </InputGroup>
 
-      <Flex w="100%" align="center" justify="space-between">
+      <Flex
+        w="100%"
+        align={{ lg: "center", base: "start" }}
+        direction={{ lg: "row", base: "column" }}
+        gap={{ base: "1rem" }}
+        justify="space-between">
         <HStack spacing={3}>
           {FILTERS.map((filter) => (
             <Button
               key={filter}
-              onClick={() => handleFilterClick(filter)}
+              onClick={() => setActiveFilter(filter)}
               colorScheme={activeFilter === filter ? "orange" : "gray"}
               variant={activeFilter === filter ? "solid" : "outline"}
               leftIcon={<FiFilter />}

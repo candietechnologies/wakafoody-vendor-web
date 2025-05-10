@@ -13,19 +13,28 @@ import { IoStorefrontOutline } from "react-icons/io5";
 import { PiBowlFoodLight } from "react-icons/pi";
 import { BsSend } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
+import { useRestaurant } from "../context/restaurant";
 
 export default function SideBar() {
+  const { activeRestaurant } = useRestaurant();
+
   return (
     <Flex
       bg="white"
+      display={{ lg: "flex", base: "none" }}
       w="300px"
       h="100vh"
       boxShadow="lg"
       align="center"
       direction="column">
       <Flex p="1rem" w="100%" align="center" direction="column" gap="1rem">
-        <Avatar title="waka kitchen" src="" size="xl">
-          <AvatarBadge boxSize="0.7em" bg="green.500" />
+        <Avatar
+          title={activeRestaurant?.name}
+          src={activeRestaurant?.image}
+          size="xl">
+          {activeRestaurant?.isOpen && (
+            <AvatarBadge boxSize="0.7em" bg="green.500" />
+          )}
         </Avatar>
         <Flex w="100%" align="center" gap="0.4rem" justify="center">
           <Heading

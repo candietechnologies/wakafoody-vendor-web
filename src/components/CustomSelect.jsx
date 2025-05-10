@@ -40,7 +40,7 @@ export default function CustomSelect({
   };
 
   return (
-    <FormControl>
+    <FormControl isRequired={required}>
       <FormLabel fontWeight="normal" fontSize={{ lg: 14, md: 15, base: 13 }}>
         {label}
       </FormLabel>

@@ -1,5 +1,4 @@
-import React from "react";
-import Wrapper from "../../components/Wrapper";
+import React, { useEffect, useState } from "react";
 import {
   Flex,
   Tabs,
@@ -8,109 +7,210 @@ import {
   Tab,
   TabPanel,
 } from "@chakra-ui/react";
-import MenuOverview from "./MenuOverview";
-import SearchAndFilter from "../../components/SearchAndFilter";
-import MenuList from "./MenuList";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+
+import Wrapper from "../../components/Wrapper";
+import SearchAndFilter from "../../components/SearchAndFilter";
+
+import MenuOverview from "./MenuOverview";
+import MenuList from "./MenuList";
 import MenuOptionList from "./MenuOptionList";
 import OptionList from "./OptionList";
 import PackList from "./PackList";
 
-const sampleMenus = [
-  {
-    name: "Grilled Chicken",
-    price: 3500,
-    status: "available",
-    totalSold: 124,
-    dateCreated: "2024-11-05T12:00:00Z",
-    discount: 10,
-  },
-  {
-    name: "Beef Suya",
-    price: 2500,
-    status: "sold out",
-    totalSold: 220,
-    dateCreated: "2024-10-15T08:30:00Z",
-    discount: 0,
-  },
-  {
-    name: "Jollof Rice",
-    price: 1800,
-    status: "available",
-    totalSold: 300,
-    dateCreated: "2024-09-12T14:10:00Z",
-    discount: 5,
-  },
-  {
-    name: "Grilled Chicken",
-    price: 3500,
-    status: "available",
-    totalSold: 124,
-    dateCreated: "2024-11-05T12:00:00Z",
-    discount: 10,
-  },
-  {
-    name: "Beef Suya",
-    price: 2500,
-    status: "sold out",
-    totalSold: 220,
-    dateCreated: "2024-10-15T08:30:00Z",
-    discount: 0,
-  },
-  {
-    name: "Jollof Rice",
-    price: 1800,
-    status: "available",
-    totalSold: 300,
-    dateCreated: "2024-09-12T14:10:00Z",
-    discount: 5,
-  },
-];
+import MenuListSkeleton from "./MenuSkeleton";
+import MenuOptionListSkeleton from "./MenuOptionSkeleton";
+import OptionSkeleton from "./OptionSkeleton";
+
+import useGet from "../../hooks/useGet";
+import { useRestaurant } from "../../context/restaurant";
+import { url } from "../../utils/lib";
 
 export default function Menus() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { activeRestaurant } = useRestaurant();
+
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [menuList, setMenuList] = useState([]);
+  const [menuOptionList, setMenuOptionList] = useState([]);
+  const [optionList, setOptionList] = useState([]);
+  const [packList, setPackList] = useState([]);
+
+  const restaurantId = activeRestaurant?._id;
+
+  const { data: menuData, isPending: isMenuLoading } = useGet(
+    `${url}/v1/menu?restaurant=${restaurantId}`,
+    `menu-${restaurantId}`
+  );
+
+  const { data: menuOptionData, isPending: isMenuOptionLoading } = useGet(
+    `${url}/v1/menu-options?restaurant=${restaurantId}`,
+    `menu-options-${restaurantId}`
+  );
+
+  const { data: optionData, isPending: isOptionLoading } = useGet(
+    `${url}/v1/option?restaurant=${restaurantId}`,
+    `options-${restaurantId}`
+  );
+
+  const { data: packData, isPending: isPackLoading } = useGet(
+    `${url}/v1/pack?restaurant=${restaurantId}`,
+    `packs-${restaurantId}`
+  );
+
+  const { data: statData, isPending: isStatLoading } = useGet(
+    `${url}/v1/menu/stats?restaurant=${restaurantId}`,
+    `stats-${restaurantId}`
+  );
+
+  const { data: categoryData, isPending: isCategoryPending } = useGet(
+    `${url}/v1/category/vendor`,
+    `categories`
+  );
+  const { data: collectionData, isPending: isCollectionLoading } = useGet(
+    `${url}/v1/collection?restaurant=${restaurantId}`,
+    `collection-${restaurantId}`
+  );
+
+  const categoryList = categoryData?.data || [];
+  const collectionList = collectionData?.data || [];
+
+  // Populate initial state
+  useEffect(() => {
+    if (!menuData || !menuOptionData || !optionData || !packData) return;
+
+    setMenuList(menuData.data);
+    setMenuOptionList(menuOptionData.data);
+    setOptionList(optionData.data);
+    setPackList(packData.data);
+  }, [menuData, menuOptionData, optionData, packData]);
+
+  // Filter on search
+  useEffect(() => {
+    if (!search && !filter) {
+      setMenuList(menuData?.data);
+      setMenuOptionList(menuOptionData?.data);
+      setOptionList(optionData?.data);
+      setPackList(packData?.data);
+      return;
+    }
+
+    const term = search.trim().toLowerCase();
+    const filterTerm = filter.trim().toLowerCase();
+
+    const filterByName = (list) =>
+      list?.filter((el) => el.name?.toLowerCase().includes(term)) || [];
+
+    if (filterTerm) {
+      setMenuList(
+        menuData?.data?.filter((el) =>
+          filterTerm === "available"
+            ? el.inStock
+            : filterTerm === "sold out"
+            ? !el.inStock
+            : el
+        )
+      );
+    } else {
+      setMenuList(
+        menuData?.data?.filter(
+          (el) =>
+            el.name?.toLowerCase().includes(term) ||
+            el.description?.toLowerCase().includes(term)
+        ) || []
+      );
+      setMenuOptionList(filterByName(menuOptionData?.data?.data));
+      setOptionList(filterByName(optionData?.data?.data));
+      setPackList(filterByName(packData?.data?.data));
+    }
+  }, [search, menuData, menuOptionData, optionData, packData, filter]);
+
+  // Invalidate queries on restaurant change
+  useEffect(() => {
+    if (!restaurantId) return;
+
+    const keys = [
+      `menu-${restaurantId}`,
+      `menu-options-${restaurantId}`,
+      `options-${restaurantId}`,
+      `packs-${restaurantId}`,
+      `stats-${restaurantId}`,
+      `collection-${restaurantId}`,
+    ];
+
+    keys.forEach((key) => queryClient.invalidateQueries({ queryKey: [key] }));
+  }, [restaurantId, queryClient]);
+
   return (
     <Wrapper title="Menus">
-      <Flex w="100%" align="start" direction="column" gap="1rem" p="1rem">
-        <MenuOverview total={10} soldOut={30} available={12} />
+      <Flex w="100%" direction="column" gap="1rem" p="1rem">
+        <MenuOverview
+          total={statData?.data?.total}
+          soldOut={statData?.data?.soldout}
+          available={statData?.data?.available}
+          isLoading={isStatLoading}
+        />
+
         <SearchAndFilter
+          setActiveFilter={setFilter}
+          activeFilter={filter}
+          searchTerm={search}
+          setSearchTerm={setSearch}
           title="Add Menu"
           onClick={() => navigate("/menus/add")}
         />
-        <Tabs w="100%" variant="soft-rounded" colorScheme="orange">
-          <TabList>
+
+        <Tabs
+          variant="soft-rounded"
+          colorScheme="orange"
+          size={{ base: "sm", md: "md" }}
+          overflowX="auto"
+          w="100%">
+          <TabList mb="0.5rem">
             <Tab>Menus</Tab>
             <Tab>Menu Options</Tab>
             <Tab>Options</Tab>
             <Tab>Packs</Tab>
           </TabList>
+
           <TabPanels>
-            <TabPanel>
-              <MenuList menus={sampleMenus} />
+            <TabPanel p={0}>
+              {isMenuLoading ? (
+                <MenuListSkeleton />
+              ) : (
+                <MenuList
+                  categories={categoryList}
+                  collections={collectionList}
+                  menus={menuList}
+                />
+              )}
             </TabPanel>
-            <TabPanel>
-              <MenuOptionList
-                menuOptions={[
-                  { name: "Spice Level", count: 3 },
-                  { name: "Protein Type", count: 4 },
-                ]}
-              />
+
+            <TabPanel p={0}>
+              {isMenuOptionLoading ? (
+                <MenuOptionListSkeleton />
+              ) : (
+                <MenuOptionList menuOptions={menuOptionList} />
+              )}
             </TabPanel>
-            <TabPanel>
-              <OptionList
-                options={[
-                  { name: "Extra Cheese", price: 500 },
-                  { name: "No Onions", price: 0 },
-                ]}
-              />
+
+            <TabPanel p={0}>
+              {isOptionLoading ? (
+                <OptionSkeleton />
+              ) : (
+                <OptionList options={optionList} />
+              )}
             </TabPanel>
-            <TabPanel>
-              <PackList
-                options={[
-                  { name: "Extra Cheese", price: 500 },
-                  { name: "No Onions", price: 0 },
-                ]}
-              />
+
+            <TabPanel p={0}>
+              {isPackLoading ? (
+                <OptionSkeleton />
+              ) : (
+                <PackList options={packList} />
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>

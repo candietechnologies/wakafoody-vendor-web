@@ -44,9 +44,10 @@ const orders = [
 export default function OrdersBar() {
   return (
     <Flex
+      display={{ lg: "flex", base: "none" }}
       align="start"
       direction="column"
-      w="350px"
+      w="300px"
       h="100vh"
       bg="white"
       overflowY="scroll"
@@ -61,14 +62,18 @@ export default function OrdersBar() {
           textTransform="capitalize">
           Ongoing Orders
         </Heading>
-        <Button variant="ghost" colorScheme="orange" size="sm">
+        <Button
+          style={{ fontFamily: "Poppins" }}
+          variant="ghost"
+          colorScheme="orange"
+          size="sm">
           View All
         </Button>
       </Flex>
       <Divider />
       <VStack spacing={5}>
-        {orders.map((order) => (
-          <OrderCard key={order.id} order={order} />
+        {orders.map((order, i) => (
+          <OrderCard key={i} order={order} />
         ))}
       </VStack>
     </Flex>

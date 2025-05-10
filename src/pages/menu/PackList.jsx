@@ -11,29 +11,28 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import amountFormater from "../../utils/amount-formatter";
+import { formatDate } from "../../utils/format-date";
+import { formatTime } from "../../utils/formatTime";
 
 const PackList = ({ options = [], onEdit }) => {
   return (
     <Box
       w="100%"
-      p={6}
       bg={useColorModeValue("white", "gray.800")}
       borderRadius="md"
       boxShadow="md">
-      <Text fontSize="xl" fontWeight="bold" mb={4}>
-        Packs
-      </Text>
-
       <Table variant="simple">
-        <Thead>
+        <Thead bg={useColorModeValue("gray.100", "gray.700")}>
           <Tr>
             <Th>Name</Th>
             <Th isNumeric>Price (₦)</Th>
+            <Th>Date Created</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {options.length === 0 ? (
+          {options?.length === 0 ? (
             <Tr>
               <Td colSpan={3}>
                 <Text textAlign="center" color="gray.500">
@@ -42,10 +41,13 @@ const PackList = ({ options = [], onEdit }) => {
               </Td>
             </Tr>
           ) : (
-            options.map((opt, idx) => (
+            options?.map((opt, idx) => (
               <Tr key={idx}>
-                <Td>{opt.name}</Td>
-                <Td isNumeric>{opt.price}</Td>
+                <Td textTransform="capitalize">{opt.name}</Td>
+                <Td isNumeric>₦{amountFormater(opt.price)}</Td>
+                <Td>
+                  {formatDate(opt.createdAt)}, {formatTime(opt.createdAt)}
+                </Td>
                 <Td>
                   <Button
                     size="sm"
