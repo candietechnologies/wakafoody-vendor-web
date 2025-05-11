@@ -13,6 +13,7 @@ import Spinner from "./components/Spinner";
 import { useAuth } from "./context/auth";
 
 const Login = lazy(() => import("./pages/login/Login"));
+const Register = lazy(() => import("./pages/register/Register"));
 
 const Home = lazy(() => import("./pages/home/Home"));
 const Menu = lazy(() => import("./pages/menu/Menus"));
@@ -20,6 +21,8 @@ const AddMenu = lazy(() => import("./pages/add-menu/AddMenu"));
 const Orders = lazy(() => import("./pages/orders/Order"));
 const ViewOrder = lazy(() => import("./pages/view-order/ViewOrder"));
 const Payout = lazy(() => import("./pages/payout/Payout"));
+const Verify = lazy(() => import("./pages/verify/Verify"));
+const Onboarding = lazy(() => import("./pages/onboarding/Onboarding"));
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
@@ -49,6 +52,8 @@ const ProtectedRoute = () => {
 const routes = createRoutesFromElements(
   <Route>
     <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/verify" element={<Verify />} />
 
     <Route element={<ProtectedRoute />}>
       <Route path="/" element={<Home />} />
@@ -59,6 +64,8 @@ const routes = createRoutesFromElements(
       <Route path="/orders/:id" element={<ViewOrder />} />
 
       <Route path="/payouts" element={<Payout />} />
+
+      <Route path="/onboarding" element={<Onboarding />} />
     </Route>
   </Route>
 );

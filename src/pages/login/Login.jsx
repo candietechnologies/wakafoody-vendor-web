@@ -1,6 +1,5 @@
-import { Box, Button, Divider, Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import ImageComponent from "../../components/Image";
 import InputComponent from "../../components/Input";
 import PasswordInput from "../../components/PasswordInput";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ import OneSignal from "react-onesignal";
 import { usePost } from "../../hooks/usePost";
 import { url } from "../../utils/lib";
 import { getOneSignalId } from "../../utils/onesignal";
+import AuthWrapper from "../../components/AuthWrapper";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }).trim(),
@@ -46,6 +46,7 @@ export default function Login() {
       navigate(from, { replace: true });
     } else {
       // navigate to create restaurant page
+      navigate("/onboarding");
     }
 
     login(data?.data?.user, data?.data?.token);
@@ -74,86 +75,54 @@ export default function Login() {
     reset({ email: user?.email || "" });
   }, [user, reset]);
   return (
-    <Flex
-      w="100%"
-      align="center"
-      justify="center"
-      bgGradient="linear(to-r, orange.400, red.500)"
-      h="100vh"
-      p={4}>
+    <AuthWrapper>
+      <form
+        className="w-full flex flex-col items-start gap-4"
+        onSubmit={handleSubmit(onSubmit)}>
+        <InputComponent
+          register={register}
+          name="email"
+          placeholder="example@gmail.com"
+          label="Email"
+          info={errors.email?.message ? errors.email.message : null}
+        />
+        <PasswordInput
+          register={register}
+          name="password"
+          label="Password"
+          info={errors.password?.message ? errors.password.message : null}
+        />
+        <Button
+          w="100%"
+          size="lg"
+          fontSize="16px"
+          bg="brand.100"
+          color="white"
+          isLoading={loginHandler.isPending}
+          isDisabled={loginHandler.isPending}
+          _hover={{ opacity: "90%", boxShadow: "lg" }}
+          type="submit">
+          Login
+        </Button>
+      </form>
+
       <Flex
-        p="2rem"
-        align="center"
-        justify="start"
         w="100%"
-        maxW="500px"
-        bg="white"
-        rounded="md"
-        boxShadow="xl"
-        direction="column"
-        gap="1.5rem">
-        <Box w="100px">
-          <ImageComponent src="/logo.png" alt="wakafoody logo" height="80px" />
-        </Box>
-
-        <Heading
-          fontSize="24px"
-          color="#111"
-          fontWeight="bold"
-          textAlign="center">
-          Welcome Back!
-        </Heading>
-
-        <Text fontSize="sm" color="gray.600">
-          Continue the experience by logging in to your account.
-        </Text>
-
-        <Divider />
-
-        <form
-          className="w-full flex flex-col items-start gap-4 mt-8"
-          onSubmit={handleSubmit(onSubmit)}>
-          <InputComponent
-            register={register}
-            name="email"
-            placeholder="example@gmail.com"
-            label="Email"
-            info={errors.email?.message ? errors.email.message : null}
-          />
-          <PasswordInput
-            register={register}
-            name="password"
-            label="Password"
-            info={errors.password?.message ? errors.password.message : null}
-          />
-          <Button
-            w="100%"
-            size="lg"
-            fontSize="16px"
-            bg="brand.100"
-            color="white"
-            isLoading={loginHandler.isPending}
-            isDisabled={loginHandler.isPending}
-            _hover={{ opacity: "90%", boxShadow: "lg" }}
-            type="submit">
-            Login
-          </Button>
-        </form>
-
-        <Flex w="100%" justify="space-between" fontSize="sm" color="gray.600">
-          <Link to="/forgot-password" style={{ color: "#FF4500" }}>
-            Forgot Password?
+        align={{ lg: "center", base: "center" }}
+        justify={{ lg: "space-between", base: "center" }}
+        direction={{ lg: "row", base: "column" }}
+        fontSize="sm"
+        color="gray.600">
+        <Link to="/forgot-password" style={{ color: "#FF4500" }}>
+          Forgot Password?
+        </Link>
+        <Text>
+          Don’t have an account?{" "}
+          <Link to="/register" style={{ color: "#FF4500", fontWeight: "500" }}>
+            Register
           </Link>
-          <Text>
-            Don’t have an account?{" "}
-            <Link
-              to="/register"
-              style={{ color: "#FF4500", fontWeight: "500" }}>
-              Register
-            </Link>
-          </Text>
-        </Flex>
+        </Text>
       </Flex>
-    </Flex>
+    </AuthWrapper>
   );
 }

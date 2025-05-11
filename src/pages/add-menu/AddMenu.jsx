@@ -90,8 +90,6 @@ const AddMenu = () => {
     `packs-${restaurantId}`
   );
 
-  console.log(menuData?.data);
-
   const {
     register,
     handleSubmit,

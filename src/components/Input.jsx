@@ -31,7 +31,7 @@ export default function InputComponent({
           value={value}
           fontSize={{ lg: 16, md: 16, base: 16 }}
           _placeholder={{ fontSize: { lg: 16, md: 15, base: 12 } }}
-          focusBorderColor={focusBorderColor ? focusBorderColor : "#FF4500"}
+          focusBorderColor={"#FF4500"}
           placeholder={placeholder}
           readOnly={readOnly}
           isRequired={required}
