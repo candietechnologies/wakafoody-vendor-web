@@ -146,7 +146,7 @@ export default function Menus() {
 
   return (
     <Wrapper title="Menus">
-      <Flex w="100%" direction="column" gap="1rem" p="1rem">
+      <Flex w="100%" direction="column" gap="1rem" p={{ lg: 4, base: 1 }}>
         <MenuOverview
           total={statData?.data?.total}
           soldOut={statData?.data?.soldout}

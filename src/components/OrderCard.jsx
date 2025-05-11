@@ -12,6 +12,11 @@ import {
 import amountFormater from "../utils/amount-formatter";
 import { formatDate } from "../utils/format-date";
 import { formatTime } from "../utils/formatTime";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRestaurant } from "../context/restaurant";
+import { useNavigate } from "react-router-dom";
+import { usePatch } from "../hooks/usePatch";
+import { url } from "../utils/lib";
 
 const statusColor = {
   paid: "orange",
@@ -23,11 +28,37 @@ const statusColor = {
   "picked up": "pink",
 };
 
-const OrderCard = ({ order, onAccept, onDecline, w }) => {
+const OrderCard = ({ order, w }) => {
   const bg = useColorModeValue("white", "gray.800");
   const shadow = useColorModeValue("md", "dark-lg");
+  const queryClient = useQueryClient();
+  const { activeRestaurant } = useRestaurant();
+  const navigate = useNavigate();
+
   const user = order?.user?.length > 0 ? order?.user[0] : "";
-  const menu = order?.menu?.length > 0 ? order?.menu[0] : "";
+  const restaurantId = activeRestaurant?._id;
+
+  function viewOrder() {
+    navigate(`/orders/${order?.orderId}`);
+  }
+
+  function handleSuccess() {
+    queryClient.invalidateQueries([`orders-${restaurantId}`]);
+  }
+
+  const acceptHandler = usePatch({
+    url: `${url}/v1/order/${order?.id}/vendor/accept?restaurant=${restaurantId}`,
+    queryKey: `orders-${restaurantId}`,
+    title: "Order accepted",
+    onSuccess: handleSuccess,
+  });
+
+  const declineHandler = usePatch({
+    url: `${url}/v1/order/${order?.id}/vendor/decline?restaurant=${restaurantId}`,
+    queryKey: `orders-${restaurantId}`,
+    title: "Order declined",
+    onSuccess: handleSuccess,
+  });
 
   return (
     <Box
@@ -42,29 +73,47 @@ const OrderCard = ({ order, onAccept, onDecline, w }) => {
       transition="all 0.3s ease"
       _hover={{ transform: "scale(1.02)" }}>
       <VStack align="start" spacing={3}>
-        <Text style={{ fontFamily: "Poppins" }} fontSize="xl" fontWeight="bold">
+        <Text
+          onClick={viewOrder}
+          style={{ fontFamily: "Poppins" }}
+          fontSize="xl"
+          fontWeight="bold">
           Order #{order.orderId}
         </Text>
 
         <Text
+          onClick={viewOrder}
           noOfLines={1}
           textTransform="capitalize"
           style={{ fontFamily: "Poppins" }}>
           <strong>Customer:</strong> {user?.firstName} {user?.lastName}
         </Text>
 
-        <Text noOfLines={1} style={{ fontFamily: "Poppins" }}>
-          <strong>Menu:</strong> {menu?.name}
+        <Text
+          onClick={viewOrder}
+          noOfLines={1}
+          textTransform="capitalize"
+          style={{ fontFamily: "Poppins" }}>
+          <strong>Menu:</strong> {order?.menu?.name}
         </Text>
 
-        <Text noOfLines={1} style={{ fontFamily: "Poppins" }}>
+        <Text
+          onClick={viewOrder}
+          noOfLines={1}
+          style={{ fontFamily: "Poppins" }}>
           <strong>Price:</strong> ₦{amountFormater(order?.price || 0)}
         </Text>
 
-        <Text noOfLines={1} style={{ fontFamily: "Poppins" }}>
+        <Text
+          onClick={viewOrder}
+          noOfLines={1}
+          style={{ fontFamily: "Poppins" }}>
           <strong>Quantity:</strong> {order?.quantity}
         </Text>
-        <Text noOfLines={1} style={{ fontFamily: "Poppins" }}>
+        <Text
+          onClick={viewOrder}
+          noOfLines={1}
+          style={{ fontFamily: "Poppins" }}>
           <strong>Date:</strong> {formatDate(order?.date)},{" "}
           {formatTime(order?.date)}
         </Text>
@@ -87,7 +136,11 @@ const OrderCard = ({ order, onAccept, onDecline, w }) => {
                 size="sm"
                 style={{ fontFamily: "Poppins" }}
                 colorScheme="green"
-                onClick={() => onAccept(order.id)}>
+                isLoading={acceptHandler.isPending}
+                isDisabled={acceptHandler.isPending}
+                onClick={() => {
+                  acceptHandler.mutate({});
+                }}>
                 Accept
               </Button>
               <Button
@@ -95,7 +148,11 @@ const OrderCard = ({ order, onAccept, onDecline, w }) => {
                 colorScheme="red"
                 size="sm"
                 variant="outline"
-                onClick={() => onDecline(order.id)}>
+                isLoading={declineHandler.isPending}
+                isDisabled={declineHandler.isPending}
+                onClick={() => {
+                  declineHandler.mutate({});
+                }}>
                 Decline
               </Button>
             </HStack>
@@ -107,7 +164,7 @@ const OrderCard = ({ order, onAccept, onDecline, w }) => {
               size="sm"
               bg="brand.100"
               color="#fff"
-              onClick={() => onAccept(order.id)}>
+              onClick={viewOrder}>
               View
             </Button>
           )}

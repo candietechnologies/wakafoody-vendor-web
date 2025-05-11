@@ -11,6 +11,7 @@ import {
   FormLabel,
   Input,
   useDisclosure,
+  Flex,
 } from "@chakra-ui/react";
 
 const schema = z.object({
@@ -261,14 +262,18 @@ const AddMenu = () => {
         mx="auto"
         p="1rem"
         bg={bg}
+        overflowY="scroll"
         borderColor={borderBg}
         rounded="lg">
         <Heading size="md" mb={4}>
           {menuId ? "Edit" : "Add New"} Menu
         </Heading>
 
-        <form className="p-[1rem]" onSubmit={handleSubmit(onSubmit)}>
-          <VStack pb="3rem" spacing={4} align="stretch">
+        <form
+          // style={{ width: "100%", height: "100%" }}
+          className="p-[1rem]"
+          onSubmit={handleSubmit(onSubmit)}>
+          <Flex w="100%" align="start" direction="column" gap="1rem">
             {/* Image */}
             <FormControl required={true}>
               <FormLabel>Menu Image</FormLabel>
@@ -396,13 +401,14 @@ const AddMenu = () => {
                 menuHandler.isPending ||
                 updateHandler.isPending
               }
+              w="100%"
               bg="brand.100"
               color="#fff"
               colorScheme="orange"
               type="submit">
               {menuId ? "Edit Menu" : "Add Menu"}
             </Button>
-          </VStack>
+          </Flex>
         </form>
       </Box>
     </Wrapper>

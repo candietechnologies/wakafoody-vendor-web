@@ -1,47 +1,38 @@
-import { Button, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
-import React from "react";
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  VStack,
+  Box,
+  Text,
+} from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import OrderCard from "./OrderCard";
-
-const orders = [
-  {
-    id: "12345",
-    customerName: "Jane Doe",
-    items: ["Burger", "Fries", "Soda"],
-    status: "paid",
-  },
-  {
-    id: "12346",
-    customerName: "John Smith",
-    items: ["Pizza", "Garlic Bread"],
-    status: "accepted",
-  },
-  {
-    id: "12345",
-    customerName: "Jane Doe",
-    items: ["Burger", "Fries", "Soda"],
-    status: "paid",
-  },
-  {
-    id: "12346",
-    customerName: "John Smith",
-    items: ["Pizza", "Garlic Bread"],
-    status: "accepted",
-  },
-  {
-    id: "12345",
-    customerName: "Jane Doe",
-    items: ["Burger", "Fries", "Soda"],
-    status: "paid",
-  },
-  {
-    id: "12346",
-    customerName: "John Smith",
-    items: ["Pizza", "Garlic Bread"],
-    status: "accepted",
-  },
-];
+import useGet from "../hooks/useGet";
+import { url } from "../utils/lib";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRestaurant } from "../context/restaurant";
+import OrderSkeleton from "../pages/orders/OrderSkeleton";
+import { useNavigate } from "react-router-dom";
 
 export default function OrdersBar() {
+  const queryClient = useQueryClient();
+  const { activeRestaurant } = useRestaurant();
+  const restaurantId = activeRestaurant?._id;
+  const navigate = useNavigate();
+
+  const { data, isPending } = useGet(
+    `${url}/v1/restaurant/${restaurantId}/orders?type=newandongoing`,
+    `orders-${restaurantId}`
+  );
+
+  const list = data?.data;
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: [`orders-${restaurantId}`] });
+  }, [restaurantId, queryClient]);
+
   return (
     <Flex
       display={{ lg: "flex", base: "none" }}
@@ -66,16 +57,36 @@ export default function OrdersBar() {
           style={{ fontFamily: "Poppins" }}
           variant="ghost"
           colorScheme="orange"
-          size="sm">
+          size="sm"
+          onClick={() => navigate("/orders")}>
           View All
         </Button>
       </Flex>
       <Divider />
-      <VStack spacing={5}>
-        {orders.map((order, i) => (
-          <OrderCard key={i} order={order} />
-        ))}
-      </VStack>
+      {isPending && <OrderSkeleton />}
+
+      {list && list?.length > 0 && (
+        <VStack spacing={5}>
+          {list?.map((order, i) => (
+            <OrderCard key={i} order={order} />
+          ))}
+        </VStack>
+      )}
+
+      {list && list?.length === 0 && (
+        <Box
+          border="1px"
+          borderColor="gray.200"
+          borderRadius="md"
+          py={8}
+          bg="white"
+          px={4}
+          textAlign="center"
+          color="gray.500"
+          width="100%">
+          <Text>No orders available.</Text>
+        </Box>
+      )}
     </Flex>
   );
 }

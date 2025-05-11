@@ -23,7 +23,7 @@ export function formatDate(dateInput) {
     // Return in 'Month Day, Year' format
     return inputDate.toLocaleDateString(undefined, {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     });
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Wrapper from "../../components/Wrapper";
 import { Box, Flex, Select } from "@chakra-ui/react";
 import OrderOverview from "./OrderOverview";
@@ -9,6 +9,8 @@ import { url } from "../../utils/lib";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRestaurant } from "../../context/restaurant";
 import OrderSkeleton from "./OrderSkeleton";
+import OrderTable from "./OrderTable";
+import ViewSwitch from "./ViewSwitch";
 
 export default function Order() {
   const queryClient = useQueryClient();
@@ -16,6 +18,9 @@ export default function Order() {
 
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [list, setList] = useState([]);
+
+  const [view, setView] = useState("grid");
 
   const restaurantId = activeRestaurant?._id;
 
@@ -29,8 +34,21 @@ export default function Order() {
     `orders-${restaurantId}-stats`
   );
 
-  const orders = data?.data;
   const stats = statData?.data;
+
+  useEffect(() => {
+    if (!data?.data) return;
+
+    if (search) {
+      const filtered = data?.data?.filter((el) =>
+        el.orderId.toLowerCase().includes(search.trim().toLowerCase())
+      );
+      setList(filtered);
+      return;
+    }
+
+    setList(data?.data);
+  }, [data?.data, search]);
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: [`orders-${restaurantId}`] });
@@ -41,7 +59,7 @@ export default function Order() {
 
   return (
     <Wrapper showBar={false} title="orders">
-      <Flex w="100%" direction="column" gap="1rem" p="1rem">
+      <Flex w="100%" direction="column" gap="1rem" p={{ lg: 4, base: 1 }}>
         <OrderOverview
           completedOrders={stats?.completedOrders}
           completedOrdersCount={stats?.ongoingOrdersCount}
@@ -58,13 +76,22 @@ export default function Order() {
           setActiveFilter={setFilter}
           searchTerm={search}
           setSearchTerm={setSearch}
-          component={<Filter />}
+          component={<ViewSwitch activeView={view} onChange={setView} />}
         />
-        {isPending ? (
-          <OrderSkeleton w={{ lg: "30%", base: "100%" }} />
-        ) : (
-          <OrderList list={orders} />
-        )}
+
+        <Flex w="100%" align="start" direction="column">
+          {isPending ? (
+            <OrderSkeleton w={{ lg: "30%", base: "100%" }} />
+          ) : (
+            <Fragment>
+              {view === "list" ? (
+                <OrderTable list={list} />
+              ) : (
+                <OrderList list={list} />
+              )}
+            </Fragment>
+          )}
+        </Flex>
       </Flex>
     </Wrapper>
   );

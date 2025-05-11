@@ -22,7 +22,9 @@ const SearchAndFilter = ({
   FILTERS = ["all", "available", "sold out"],
   placeholder,
   component,
+  showSearch = true,
 }) => {
+  const bg = useColorModeValue("white", "gray.800");
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -30,19 +32,22 @@ const SearchAndFilter = ({
 
   return (
     <Box w="100%">
-      <InputGroup mb={4}>
-        <InputLeftElement pointerEvents="none">
-          <Icon as={FiSearch} color="gray.400" />
-        </InputLeftElement>
-        <Input
-          placeholder={placeholder || "Search menu items..."}
-          value={searchTerm}
-          onChange={handleSearchChange}
-          bg={useColorModeValue("white", "gray.800")}
-        />
-      </InputGroup>
+      {showSearch && (
+        <InputGroup mb={4}>
+          <InputLeftElement pointerEvents="none">
+            <Icon as={FiSearch} color="gray.400" />
+          </InputLeftElement>
+          <Input
+            placeholder={placeholder || "Search menu items..."}
+            value={searchTerm}
+            onChange={handleSearchChange}
+            bg={bg}
+          />
+        </InputGroup>
+      )}
 
       <Flex
+        overflowX="scroll"
         w="100%"
         align={{ lg: "center", base: "start" }}
         direction={{ lg: "row", base: "column" }}
@@ -55,6 +60,7 @@ const SearchAndFilter = ({
               onClick={() => setActiveFilter(filter)}
               colorScheme={activeFilter === filter ? "orange" : "gray"}
               variant={activeFilter === filter ? "solid" : "outline"}
+              bg={activeFilter === filter ? "brand.100" : "white"}
               leftIcon={<FiFilter />}
               size="sm"
               textTransform="capitalize">
