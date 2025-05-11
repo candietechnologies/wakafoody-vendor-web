@@ -28,7 +28,7 @@ const StatCard = ({ label, value, icon, color, isLoading }) => {
           <StatLabel fontWeight="medium" isTruncated>
             {label}
           </StatLabel>
-          <StatNumber fontSize="2xl" fontWeight="bold">
+          <StatNumber fontSize={{ lg: "xl", base: "lg" }} fontWeight="semibold">
             {isLoading ? <Skeleton height="20px" width="80px" /> : value}
           </StatNumber>
         </Box>
