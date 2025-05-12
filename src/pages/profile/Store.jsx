@@ -11,22 +11,13 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useRestaurant } from "../../context/restaurant";
+import { formatDate } from "../../utils/format-date";
+import { formatTime } from "../../utils/formatTime";
 
 const StoreProfile = () => {
   const { activeRestaurant } = useRestaurant();
-  const {
-    image,
-    name,
-    description,
-    phone,
-    email,
-    address,
-    status,
-    createdAt,
-    username,
-  } = activeRestaurant;
 
-  const statusColor = status === "active" ? "green" : "red";
+  const statusColor = activeRestaurant?.status === "active" ? "green" : "red";
 
   return (
     <Box
@@ -41,33 +32,41 @@ const StoreProfile = () => {
         direction={{ base: "column", md: "row" }}
         spacing={6}
         align="center">
-        <Avatar size="xl" src={image} name={name} />
+        <Avatar
+          size="xl"
+          src={activeRestaurant?.image}
+          name={activeRestaurant?.name}
+        />
         <VStack align="start" spacing={1}>
           <Text
             style={{ fontFamily: "Poppins" }}
             textTransform="capitalize"
             fontSize="2xl"
             fontWeight="bold">
-            {name}
+            {activeRestaurant?.name}
           </Text>
           <Text textTransform="capitalize" color="gray.500">
-            {description}
+            {activeRestaurant?.description}
           </Text>
-          <Badge colorScheme={statusColor.toLowerCase()}>{status}</Badge>
+          <Badge colorScheme={statusColor.toLowerCase()}>
+            {activeRestaurant?.status}
+          </Badge>
         </VStack>
       </Stack>
 
       <Divider my={4} />
 
       <VStack align="start" spacing={2}>
-        <Info label="Phone" value={phone} />
-        <Info label="Email" value={email} />
-        <Info label="Address" value={address} />
+        <Info label="Phone" value={activeRestaurant?.phone} />
+        <Info label="Email" value={activeRestaurant?.email} />
+        <Info label="Address" value={activeRestaurant?.address} />
         <Info
           label="Created"
-          value={new Date(createdAt).toLocaleDateString()}
+          value={`${formatDate(activeRestaurant?.createdAt)},${formatTime(
+            activeRestaurant?.createdAt
+          )}`}
         />
-        <Info label="Username" value={username} />
+        <Info label="Username" value={activeRestaurant?.username} />
       </VStack>
     </Box>
   );
