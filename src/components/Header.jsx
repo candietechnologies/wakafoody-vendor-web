@@ -77,7 +77,36 @@ export default function Header() {
               {activeRestaurant?.name}
             </MenuButton>
             <MenuList>
-              <MenuItem>Profile</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/orders");
+                }}>
+                Orders
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/menus");
+                }}>
+                Menus
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/payouts");
+                }}>
+                Payout
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/profile");
+                }}>
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/settings");
+                }}>
+                Settings
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   logout();

@@ -58,8 +58,6 @@ export default function RestaurantOperations({ handleNext }) {
     },
   });
 
-  console.log(hours);
-
   const handleChange = (dayNumber, type, value) => {
     setHours((prev) =>
       prev.map((d) => (d.day === dayNumber ? { ...d, [type]: value } : d))

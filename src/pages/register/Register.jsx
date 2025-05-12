@@ -110,7 +110,7 @@ export default function Register() {
             isDisabled={registerHandler.isPending}
             _hover={{ opacity: "90%", boxShadow: "lg" }}
             type="submit">
-            Login
+            Create Account
           </Button>
         </form>
 

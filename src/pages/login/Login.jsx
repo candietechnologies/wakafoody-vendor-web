@@ -1,5 +1,5 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import InputComponent from "../../components/Input";
 import PasswordInput from "../../components/PasswordInput";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -23,6 +23,7 @@ const schema = z.object({
 });
 
 export default function Login() {
+  const [email, setEmail] = useState("");
   const { user, login } = useAuth();
   const { selectRestaurant } = useRestaurant();
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export default function Login() {
 
   const handleSuccess = async (data) => {
     toast.success("Welcome Back");
+
     if (data?.data?.restaurant) {
       selectRestaurant(data?.data?.restaurant);
       navigate(from, { replace: true });
@@ -50,19 +52,24 @@ export default function Login() {
     }
 
     login(data?.data?.user, data?.data?.token);
-    navigate(from, { replace: true });
     reset();
     OneSignal.login(data?.data?.user?._id);
   };
+
+  function handleError(error) {
+    if (error?.statusCode === 403) navigate(`/verify?email=${email}`);
+  }
 
   const loginHandler = usePost({
     url: `${url}/v1/auth/vendor/login`,
     queryKey: "",
     title: "Login Successful",
     onSuccess: handleSuccess,
+    onError: handleError,
   });
 
   const onSubmit = async (data) => {
+    setEmail(data?.email);
     const onesignalId = getOneSignalId();
 
     loginHandler.mutate({

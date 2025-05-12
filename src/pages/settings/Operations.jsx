@@ -48,7 +48,6 @@ const Operation = () => {
   );
 
   const operations = data?.data;
-  console.log(operations);
 
   const [hours, setHours] = useState([]);
   const [deliveryType, setDeliveryType] = useState({

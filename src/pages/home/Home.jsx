@@ -60,9 +60,9 @@ export default function Home() {
             fontSize="sm"
             fontWeight="500"
             color={
-              activeRestaurant.status === "open" ? "green.500" : "red.500"
+              activeRestaurant?.isOpen === "open" ? "green.500" : "red.500"
             }>
-            {activeRestaurant.isOpen ? "Open" : "Closed"}
+            {activeRestaurant?.isOpen ? "Open" : "Closed"}
           </Text>
           {toggleHandler.isPending ? (
             <Spinner colorScheme="orange" size="sm" />
