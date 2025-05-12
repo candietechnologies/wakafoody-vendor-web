@@ -19,6 +19,7 @@ import { FaRegUser } from "react-icons/fa";
 import { useRestaurant } from "../context/restaurant";
 import SwitchRestaurant from "./SwitchRestaurant";
 import { useAuth } from "../context/auth";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export default function SideBar() {
   const { activeRestaurant } = useRestaurant();
@@ -81,6 +82,11 @@ export default function SideBar() {
           />
           <Nav icon={<BsSend size={20} />} title="Payouts" path="/payouts" />
           <Nav icon={<FaRegUser size={24} />} title="Profile" path="/profile" />
+          <Nav
+            icon={<IoSettingsOutline size={24} />}
+            title="Settings"
+            path="/settings"
+          />
         </Flex>
 
         <Box

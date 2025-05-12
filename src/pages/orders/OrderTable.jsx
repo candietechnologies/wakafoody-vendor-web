@@ -71,7 +71,7 @@ const OrderTable = ({ list }) => {
 
   return (
     <Box bg="white" w="100%" overflowX="auto">
-      <Table bg="white" variant="simple">
+      <Table h="100%" bg="white" variant="simple">
         <Thead bg={tableBg}>
           <Tr>
             <Th>S/N</Th>
@@ -89,18 +89,32 @@ const OrderTable = ({ list }) => {
             <>
               {list?.map((order, index) => (
                 <Tr key={order.id}>
-                  <Td>{index + 1}</Td>
-                  <Td>{order?.orderId}</Td>
-                  <Td textTransform="capitalize">
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>{index + 1}</Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                    {order?.orderId}
+                  </Td>
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textTransform="capitalize">
                     {order?.user?.length > 0
                       ? `${order?.user[0]?.firstName} ${order?.user[0]?.lastName}`
                       : "-"}
                   </Td>
-                  <Td>₦{amountFormater(order.price || 0)}</Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                    ₦{amountFormater(order.price || 0)}
+                  </Td>
                   <Td>
                     <Box display="flex" alignItems="center">
-                      <Avatar src={order.menu.image} size="sm" mr={2} />
-                      <Text textTransform="capitalize">{order.menu.name}</Text>
+                      <Avatar
+                        src={order.menu.image}
+                        size={{ lg: "sm", base: "xs" }}
+                        mr={2}
+                      />
+                      <Text
+                        fontSize={{ lg: "14px", base: "13px" }}
+                        textTransform="capitalize">
+                        {order.menu.name}
+                      </Text>
                     </Box>
                   </Td>
                   <Td>
@@ -114,7 +128,7 @@ const OrderTable = ({ list }) => {
                       {order.status.toUpperCase()}
                     </Badge>
                   </Td>
-                  <Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(order.date)},{formatTime(order.date)}
                   </Td>
                   <Td>

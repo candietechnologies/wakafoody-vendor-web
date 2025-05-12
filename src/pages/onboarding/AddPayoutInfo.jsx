@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { url } from "../../utils/lib";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Button } from "@chakra-ui/react";
+import { Button, Spinner } from "@chakra-ui/react";
 import { useRestaurant } from "../../context/restaurant";
 
 const schema = z.object({
@@ -64,6 +64,7 @@ export default function AddPayoutInfo() {
     <form
       className="w-full flex flex-col items-start gap-4"
       onSubmit={handleSubmit(onSubmit)}>
+      {isPending && <Spinner />}
       <CustomSelect
         label="Select Bank"
         value={bank}

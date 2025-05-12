@@ -62,23 +62,25 @@ const PayoutList = ({ list }) => {
             ) : (
               list?.map((payout) => (
                 <Tr key={payout.id}>
-                  <Td>₦{amountFormater(payout.amount)}</Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                    ₦{amountFormater(payout.amount)}
+                  </Td>
                   <Td>
-                    <Badge colorScheme={getStatusColor(payout.status)}>
+                    <Badge
+                      size={{ bae: "xs" }}
+                      colorScheme={getStatusColor(payout.status)}>
                       {payout.status}
                     </Badge>
                   </Td>
-                  <Td>
-                    <Text>
-                      {formatDate(payout.createdAt)}
-                      {", "}
-                      {formatTime(payout.createdAt)}
-                    </Text>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                    {formatDate(payout.createdAt)}
+                    {", "}
+                    {formatTime(payout.createdAt)}
                   </Td>
                   <Td>
                     <IconButton
                       icon={<ViewIcon />}
-                      size="sm"
+                      size={{ lg: "sm", base: "xs" }}
                       bg="brand.100"
                       color="white"
                       colorScheme="orange"

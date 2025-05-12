@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, Spinner } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import useGet from "../hooks/useGet";
@@ -13,7 +13,7 @@ export default function SearchAddress({ onClick, label }) {
 
   const apiurl = `${url}/v1/address-suggestion?searchText=${search}`;
 
-  const { data, isPending, isError } = useGet(apiurl, "locations");
+  const { data, isPending } = useGet(apiurl, "locations");
   const results = data?.data;
 
   useEffect(() => {
@@ -56,7 +56,12 @@ export default function SearchAddress({ onClick, label }) {
         textTransform="lowercase"
         focusBorderColor={"#FF4500"}
       />
-      {show && (
+      {isPending && (
+        <div className="w-full cursor-pointer absolute bg-white z-50 top-[75px] flex items-start flex-col p-1 rounded-sm shadow-xl">
+          <Spinner colorScheme="orange" />
+        </div>
+      )}
+      {show && !isPending && (
         <div className="w-full cursor-pointer absolute bg-white z-50 top-[75px] flex items-start flex-col p-1 rounded-sm shadow-xl">
           {locations?.map((el, i) => (
             <p

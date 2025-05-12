@@ -90,6 +90,7 @@ export default function Menus() {
 
   // Filter on search
   useEffect(() => {
+    if (!menuData || !menuOptionData || !optionData || !packData) return;
     if (!search && !filter) {
       setMenuList(menuData?.data);
       setMenuOptionList(menuOptionData?.data);

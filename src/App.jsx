@@ -14,6 +14,12 @@ import { useAuth } from "./context/auth";
 
 const Login = lazy(() => import("./pages/login/Login"));
 const Register = lazy(() => import("./pages/register/Register"));
+const ForgotPassword = lazy(() =>
+  import("./pages/forgot-password/ForgotPassword")
+);
+const ResetPassword = lazy(() =>
+  import("./pages/reset-password/ResetPassword")
+);
 
 const Home = lazy(() => import("./pages/home/Home"));
 const Menu = lazy(() => import("./pages/menu/Menus"));
@@ -23,6 +29,8 @@ const ViewOrder = lazy(() => import("./pages/view-order/ViewOrder"));
 const Payout = lazy(() => import("./pages/payout/Payout"));
 const Verify = lazy(() => import("./pages/verify/Verify"));
 const Onboarding = lazy(() => import("./pages/onboarding/Onboarding"));
+const Profile = lazy(() => import("./pages/profile/Profile"));
+const Settings = lazy(() => import("./pages/settings/Settings"));
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
@@ -54,6 +62,8 @@ const routes = createRoutesFromElements(
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/verify" element={<Verify />} />
+    <Route path="/forgot-password" element={<ForgotPassword />} />
+    <Route path="/reset-password" element={<ResetPassword />} />
 
     <Route element={<ProtectedRoute />}>
       <Route path="/" element={<Home />} />
@@ -66,6 +76,8 @@ const routes = createRoutesFromElements(
       <Route path="/payouts" element={<Payout />} />
 
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
     </Route>
   </Route>
 );

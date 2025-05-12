@@ -46,7 +46,10 @@ export default function Header() {
         boxShadow="md"
         mb="0rem">
         <Flex pl="1rem" align="center" gap="1rem">
-          <Button onClick={onOpen} size="sm">
+          <Button
+            display={{ lg: "none", base: "block" }}
+            onClick={onOpen}
+            size="sm">
             <AiOutlineMenu size="16px" />
           </Button>
           <Box display={{ lg: "block", base: "none" }} w="100px">

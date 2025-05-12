@@ -34,7 +34,7 @@ const OptionList = ({ options = [] }) => {
             <Tr>
               <Th>Name</Th>
               <Th isNumeric>Price (₦)</Th>
-              <Th>Date Created</Th>
+              <Th>Date</Th>
               <Th>Action</Th>
             </Tr>
           </Thead>
@@ -50,14 +50,20 @@ const OptionList = ({ options = [] }) => {
             ) : (
               options?.map((opt, idx) => (
                 <Tr key={idx}>
-                  <Td textTransform="capitalize">{opt.name}</Td>
-                  <Td isNumeric>₦{amountFormater(opt.price || 0)}</Td>
-                  <Td>
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textTransform="capitalize">
+                    {opt.name}
+                  </Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }} isNumeric>
+                    ₦{amountFormater(opt.price || 0)}
+                  </Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(opt.createdAt)}, {formatTime(opt.createdAt)}
                   </Td>
                   <Td>
                     <Button
-                      size="sm"
+                      size={{ lg: "sm", base: "xs" }}
                       colorScheme="orange"
                       onClick={() => {
                         setOption(opt);

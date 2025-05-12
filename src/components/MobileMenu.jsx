@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { FaHome } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa6";
-import { IoStorefrontOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoStorefrontOutline } from "react-icons/io5";
 import { PiBowlFoodLight } from "react-icons/pi";
 import { BsSend } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
@@ -54,9 +54,10 @@ const MobileMenu = ({ isOpen, onClose, onOpen }) => {
               <Flex w="100%" align="center" gap="0.4rem" justify="center">
                 <Heading
                   style={{ fontFamily: "Poppins" }}
-                  fontSize="18px"
+                  fontSize={{ lg: "18px", base: "15px" }}
                   fontWeight="600"
                   color="#111"
+                  textAlign="center"
                   textTransform="capitalize">
                   {activeRestaurant?.name}
                 </Heading>
@@ -104,6 +105,11 @@ const MobileMenu = ({ isOpen, onClose, onOpen }) => {
                   icon={<FaRegUser size={24} />}
                   title="Profile"
                   path="/profile"
+                />
+                <Nav
+                  icon={<IoSettingsOutline size={24} />}
+                  title="Settings"
+                  path="/settings"
                 />
               </Flex>
 

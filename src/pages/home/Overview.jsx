@@ -4,13 +4,14 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  StatHelpText,
+  Skeleton,
   SimpleGrid,
   useColorModeValue,
   Icon,
-  Skeleton,
 } from "@chakra-ui/react";
-import { FiList, FiXCircle, FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle } from "react-icons/fi";
+import { IoWalletOutline } from "react-icons/io5";
+import { GrInProgress } from "react-icons/gr";
 
 const StatCard = ({ label, value, icon, color, isLoading }) => {
   return (
@@ -38,27 +39,28 @@ const StatCard = ({ label, value, icon, color, isLoading }) => {
   );
 };
 
-const MenuOverview = ({ total, soldOut, available, isLoading }) => {
+const Overview = ({ completed, ongoing, sales, isLoading }) => {
   return (
     <SimpleGrid w="100%" columns={{ base: 1, md: 3 }} spacing={4}>
       <StatCard
         isLoading={isLoading}
-        label="Total"
-        value={total}
-        icon={FiList}
+        label="Total Sales"
+        value={sales}
+        icon={IoWalletOutline}
         color="blue.500"
       />
+
       <StatCard
         isLoading={isLoading}
-        label="Sold Out"
-        value={soldOut}
-        icon={FiXCircle}
-        color="red.500"
+        label="Ongoing Orders"
+        value={ongoing}
+        icon={GrInProgress}
+        color="orange.400"
       />
       <StatCard
         isLoading={isLoading}
-        label="Available"
-        value={available}
+        label="Completed Orders"
+        value={completed}
         icon={FiCheckCircle}
         color="green.500"
       />
@@ -66,4 +68,4 @@ const MenuOverview = ({ total, soldOut, available, isLoading }) => {
   );
 };
 
-export default MenuOverview;
+export default Overview;

@@ -22,7 +22,7 @@ const StatCard = ({ label, value, icon, color, isLoading, count }) => {
       border="1px solid"
       borderColor={useColorModeValue("gray.200", "gray.700")}
       rounded="lg"
-      bg={useColorModeValue("white", "gray.800")}>
+      bg="#fff">
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box>
           <StatLabel fontWeight="medium" isTruncated>
@@ -52,7 +52,7 @@ const OrderOverview = ({
   completedOrdersCount,
 }) => {
   return (
-    <SimpleGrid w="100%" columns={{ base: 1, md: 3 }} spacing={6}>
+    <SimpleGrid w="100%" columns={{ base: 1, md: 3 }} spacing={4}>
       <StatCard
         isLoading={isLoading}
         label="New Orders"

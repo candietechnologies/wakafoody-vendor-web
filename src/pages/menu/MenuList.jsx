@@ -75,7 +75,7 @@ const MenuList = ({ menus = [], categories, collections }) => {
               <Th isNumeric>Price</Th>
               <Th>Status</Th>
               <Th isNumeric>Total Sold</Th>
-              <Th>Date Created</Th>
+              <Th>Date</Th>
               <Th isNumeric>Discount (%)</Th>
               <Th>Action</Th>
             </Tr>
@@ -94,18 +94,33 @@ const MenuList = ({ menus = [], categories, collections }) => {
                 <Tr key={idx}>
                   <Td fontWeight="medium">{idx + 1}</Td>
                   <Td textTransform="capitalize" fontWeight="medium">
-                    <Avatar src={menu.image} title={menu.name} />
+                    <Avatar
+                      size={{ base: "xs", lg: "sm" }}
+                      src={menu.image}
+                      title={menu.name}
+                    />
                   </Td>
-                  <Td textTransform="capitalize" fontWeight="medium">
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textTransform="capitalize"
+                    fontWeight="medium">
                     {menu.name}
                   </Td>
-                  <Td textTransform="capitalize" fontWeight="medium">
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textTransform="capitalize"
+                    fontWeight="medium">
                     {menu.category}
                   </Td>
-                  <Td textTransform="capitalize" fontWeight="medium">
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textTransform="capitalize"
+                    fontWeight="medium">
                     {menu.collectionName}
                   </Td>
-                  <Td isNumeric>₦{amountFormater(menu.price || 0)}</Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }} isNumeric>
+                    ₦{amountFormater(menu.price || 0)}
+                  </Td>
                   <Td>
                     <Badge
                       colorScheme={statusColor[menu.inStock]}
@@ -114,8 +129,10 @@ const MenuList = ({ menus = [], categories, collections }) => {
                       {menu.inStock ? "AVAILABLE" : "SOLDOUT"}
                     </Badge>
                   </Td>
-                  <Td isNumeric>{menu.totalUnitsSold}</Td>
-                  <Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }} isNumeric>
+                    {menu.totalUnitsSold}
+                  </Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(menu.createdAt)}, {formatTime(menu.createdAt)}
                   </Td>
                   <Td isNumeric>{menu.discount || 0}%</Td>

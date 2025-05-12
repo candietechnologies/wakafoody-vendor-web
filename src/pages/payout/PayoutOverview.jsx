@@ -47,7 +47,7 @@ const StatCard = ({ label, value, icon, color, isLoading }) => {
 
 const PayoutOverview = ({ disbursed, pending, balance, isLoading }) => {
   return (
-    <SimpleGrid w="100%" columns={{ base: 1, md: 3 }} spacing={6}>
+    <SimpleGrid w="100%" columns={{ base: 1, md: 3 }} spacing={4}>
       <StatCard
         isLoading={isLoading}
         label="Balance"

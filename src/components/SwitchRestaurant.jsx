@@ -13,13 +13,18 @@ import {
   VStack,
   Button,
   Switch,
+  Spinner,
 } from "@chakra-ui/react";
 import useGet from "../hooks/useGet";
+import { usePost } from "../hooks/usePost";
 import { url } from "../utils/lib";
 import { useRestaurant } from "../context/restaurant";
+import { toast } from "react-toastify";
 
 const SwitchRestaurant = ({ isOpen, onClose }) => {
-  const { selectRestaurant } = useRestaurant();
+  const [selected, setSelected] = useState("");
+
+  const { selectRestaurant, activeRestaurant } = useRestaurant();
 
   const { data, isPending } = useGet(
     `${url}/v1/restaurant/vendor`,
@@ -27,6 +32,25 @@ const SwitchRestaurant = ({ isOpen, onClose }) => {
   );
 
   const list = data?.data;
+
+  function handleSuccess() {
+    toast.success(
+      `${selected?.name} ${selected?.isOpen ? "closed" : "opened"}`
+    );
+    if (selected?._id === activeRestaurant?._id) {
+      selectRestaurant({
+        ...activeRestaurant,
+        isOpen: !activeRestaurant.isOpen,
+      });
+    }
+  }
+
+  const toggleHandler = usePost({
+    url: `${url}/v1/restaurant/${selected?._id}/toggle`,
+    queryKey: `restaurant-list`,
+    title: "",
+    onSuccess: handleSuccess,
+  });
 
   return (
     <>
@@ -71,11 +95,19 @@ const SwitchRestaurant = ({ isOpen, onClose }) => {
                           }>
                           {restaurant.isOpen ? "Open" : "Closed"}
                         </Text>
-                        <Switch
-                          //   isChecked={inStock}
-                          //   onChange={() => setInStock((prev) => !prev)}
-                          colorScheme="orange"
-                        />
+                        {toggleHandler.isPending &&
+                        selected?._id === restaurant?._id ? (
+                          <Spinner colorScheme="orange" size="sm" />
+                        ) : (
+                          <Switch
+                            isChecked={restaurant?.isOpen}
+                            onChange={() => {
+                              setSelected(restaurant); // Set selected
+                              toggleHandler.mutate({}); // Trigger the toggle API call
+                            }}
+                            colorScheme="orange"
+                          />
+                        )}
                       </HStack>
                     </Box>
                   </HStack>

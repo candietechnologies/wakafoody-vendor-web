@@ -37,8 +37,8 @@ const MenuOptionList = ({ menuOptions = [], options }) => {
           <Thead bg={useColorModeValue("gray.100", "gray.700")}>
             <Tr>
               <Th>Name</Th>
-              <Th isNumeric>Number of Choices</Th>
-              <Th>Date Created</Th>
+              <Th isNumeric>Options</Th>
+              <Th>Date</Th>
               <Th>Action</Th>
             </Tr>
           </Thead>
@@ -54,16 +54,23 @@ const MenuOptionList = ({ menuOptions = [], options }) => {
             ) : (
               menuOptions?.map((opt, idx) => (
                 <Tr key={idx}>
-                  <Td textTransform="capitalize">{opt.name}</Td>
-                  <Td textAlign="center" isNumeric>
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textTransform="capitalize">
+                    {opt.name}
+                  </Td>
+                  <Td
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    textAlign="center"
+                    isNumeric>
                     {opt?.options?.length}
                   </Td>
-                  <Td>
+                  <Td fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(opt.createdAt)}, {formatTime(opt.createdAt)}
                   </Td>
                   <Td>
                     <Button
-                      size="sm"
+                      size={{ lg: "sm", base: "xs" }}
                       colorScheme="orange"
                       onClick={() => {
                         setOption(opt);
