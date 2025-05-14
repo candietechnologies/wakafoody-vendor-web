@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AuthWrapper from "../../components/AuthWrapper";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Checkbox, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,8 @@ import { usePost } from "../../hooks/usePost";
 import { url } from "../../utils/lib";
 import { getOneSignalId } from "../../utils/onesignal";
 import PhoneInput from "../../components/PhoneInput";
+import PartnershipAgreement from "../terms/Terms";
+import SLA from "../terms/SLA";
 
 const schema = z.object({
   firstName: z.string().min(1, { message: "First Name is required" }).trim(),
@@ -25,7 +27,11 @@ const schema = z.object({
 
 export default function Register() {
   const navigate = useNavigate();
+  const [checked, setChecked] = useState(true);
   const [email, setEmail] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const slaProps = useDisclosure();
+
   const {
     register,
     handleSubmit,
@@ -58,8 +64,26 @@ export default function Register() {
     });
   };
 
+  const onAccept = () => {
+    setChecked(true);
+    onClose();
+    slaProps.onClose();
+  };
+
   return (
     <AuthWrapper title="Welcome to WakaFoody" text="Register your restaurant">
+      {isOpen && (
+        <PartnershipAgreement
+          isOpen={isOpen}
+          onClose={onClose}
+          onAccept={onAccept}
+        />
+      )}
+      <SLA
+        isOpen={slaProps.isOpen}
+        onClose={slaProps.onClose}
+        onAccept={onAccept}
+      />
       <Flex
         w="100%"
         align="center"
@@ -100,6 +124,23 @@ export default function Register() {
             label="Password"
             info={errors.password?.message ? errors.password.message : null}
           />
+          <Checkbox
+            colorScheme="orange"
+            isChecked={checked}
+            onChange={(e) => setChecked(e.target.checked)}>
+            I agree to the{" "}
+            <span
+              onClick={onOpen}
+              style={{ color: "#FF4500", fontWeight: "500" }}>
+              Terms of Service
+            </span>{" "}
+            and{" "}
+            <span
+              onClick={slaProps.onOpen}
+              style={{ color: "#FF4500", fontWeight: "500" }}>
+              SLA
+            </span>
+          </Checkbox>
           <Button
             w="100%"
             size="lg"
@@ -107,14 +148,14 @@ export default function Register() {
             bg="brand.100"
             color="white"
             isLoading={registerHandler.isPending}
-            isDisabled={registerHandler.isPending}
+            isDisabled={registerHandler.isPending || !checked}
             _hover={{ opacity: "90%", boxShadow: "lg" }}
             type="submit">
             Create Account
           </Button>
         </form>
 
-        <Text>
+        <Text mt="2">
           Already have an account?{" "}
           <Link to="/login" style={{ color: "#FF4500", fontWeight: "500" }}>
             Login
