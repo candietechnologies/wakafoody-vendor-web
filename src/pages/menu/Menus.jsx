@@ -6,7 +6,14 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList as MenuListComp,
+  MenuItem,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -26,6 +33,10 @@ import OptionSkeleton from "./OptionSkeleton";
 import useGet from "../../hooks/useGet";
 import { useRestaurant } from "../../context/restaurant";
 import { url } from "../../utils/lib";
+import AddCollectionModal from "../../components/AddCollection";
+import AddOption from "../../components/AddOption";
+import AddMenuOptionModal from "../../components/AddMenuOption";
+import AddPack from "../../components/AddPack";
 
 export default function Menus() {
   const navigate = useNavigate();
@@ -40,6 +51,12 @@ export default function Menus() {
   const [packList, setPackList] = useState([]);
 
   const restaurantId = activeRestaurant?._id;
+
+  // modal props
+  const collectionModal = useDisclosure();
+  const optionModal = useDisclosure();
+  const meenuOptionsModal = useDisclosure();
+  const packModal = useDisclosure();
 
   const { data: menuData, isPending: isMenuLoading } = useGet(
     `${url}/v1/menu?restaurant=${restaurantId}`,
@@ -92,15 +109,15 @@ export default function Menus() {
   useEffect(() => {
     if (!menuData || !menuOptionData || !optionData || !packData) return;
     if (!search && !filter) {
-      setMenuList(menuData?.data);
-      setMenuOptionList(menuOptionData?.data);
-      setOptionList(optionData?.data);
-      setPackList(packData?.data);
+      setMenuList(menuData?.data || []);
+      setMenuOptionList(menuOptionData?.data || []);
+      setOptionList(optionData?.data || []);
+      setPackList(packData?.data || []);
       return;
     }
 
-    const term = search.trim().toLowerCase();
-    const filterTerm = filter.trim().toLowerCase();
+    const term = search?.trim().toLowerCase();
+    const filterTerm = filter?.trim().toLowerCase();
 
     const filterByName = (list) =>
       list?.filter((el) => el.name?.toLowerCase().includes(term)) || [];
@@ -147,6 +164,16 @@ export default function Menus() {
 
   return (
     <Wrapper title="Menus">
+      <AddPack isOpen={packModal.isOpen} onClose={packModal.onClose} />
+      <AddMenuOptionModal
+        isOpen={meenuOptionsModal.isOpen}
+        onClose={meenuOptionsModal.onClose}
+      />
+      <AddOption isOpen={optionModal.isOpen} onClose={optionModal.onClose} />
+      <AddCollectionModal
+        isOpen={collectionModal.isOpen}
+        onClose={collectionModal.onClose}
+      />
       <Flex w="100%" direction="column" gap="1rem" p={{ lg: 4, base: 1 }}>
         <MenuOverview
           total={statData?.data?.total}
@@ -162,6 +189,31 @@ export default function Menus() {
           setSearchTerm={setSearch}
           title="Add Menu"
           onClick={() => navigate("/menus/add")}
+          component={
+            <Menu>
+              <MenuButton
+                bg="brand.100"
+                colorScheme="orange"
+                color="#fff"
+                as={Button}
+                rightIcon={<ChevronDownIcon />}>
+                Add
+              </MenuButton>
+              <MenuListComp>
+                <MenuItem onClick={collectionModal.onOpen}>
+                  Create Collection
+                </MenuItem>
+                <MenuItem onClick={optionModal.onOpen}>Create Option</MenuItem>
+                <MenuItem onClick={meenuOptionsModal.onOpen}>
+                  Create Menu Option
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/menus/add")}>
+                  Create Menu
+                </MenuItem>
+                <MenuItem onClick={packModal.onOpen}>Create Pack</MenuItem>
+              </MenuListComp>
+            </Menu>
+          }
         />
 
         <Tabs

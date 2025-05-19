@@ -56,16 +56,20 @@ const MenuOptionList = ({ menuOptions = [], options }) => {
                 <Tr key={idx}>
                   <Td
                     fontSize={{ lg: "14px", base: "13px" }}
-                    textTransform="capitalize">
+                    textTransform="capitalize"
+                    whiteSpace="nowrap">
                     {opt.name}
                   </Td>
                   <Td
                     fontSize={{ lg: "14px", base: "13px" }}
                     textAlign="center"
+                    whiteSpace="nowrap"
                     isNumeric>
                     {opt?.options?.length}
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(opt.createdAt)}, {formatTime(opt.createdAt)}
                   </Td>
                   <Td>

@@ -31,6 +31,7 @@ const Verify = lazy(() => import("./pages/verify/Verify"));
 const Onboarding = lazy(() => import("./pages/onboarding/Onboarding"));
 const Profile = lazy(() => import("./pages/profile/Profile"));
 const Settings = lazy(() => import("./pages/settings/Settings"));
+const Analytics = lazy(() => import("./pages/analytics/Analytics"));
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
@@ -74,6 +75,7 @@ const routes = createRoutesFromElements(
       <Route path="/orders/:id" element={<ViewOrder />} />
 
       <Route path="/payouts" element={<Payout />} />
+      <Route path="/analytics" element={<Analytics />} />
 
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/profile" element={<Profile />} />

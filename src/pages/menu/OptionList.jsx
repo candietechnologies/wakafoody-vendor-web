@@ -33,7 +33,9 @@ const OptionList = ({ options = [] }) => {
           <Thead bg={useColorModeValue("gray.100", "gray.700")}>
             <Tr>
               <Th>Name</Th>
-              <Th isNumeric>Price (₦)</Th>
+              <Th whiteSpace="nowrap" isNumeric>
+                Price (₦)
+              </Th>
               <Th>Date</Th>
               <Th>Action</Th>
             </Tr>
@@ -52,13 +54,19 @@ const OptionList = ({ options = [] }) => {
                 <Tr key={idx}>
                   <Td
                     fontSize={{ lg: "14px", base: "13px" }}
-                    textTransform="capitalize">
+                    textTransform="capitalize"
+                    whiteSpace="nowrap">
                     {opt.name}
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }} isNumeric>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    isNumeric>
                     ₦{amountFormater(opt.price || 0)}
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(opt.createdAt)}, {formatTime(opt.createdAt)}
                   </Td>
                   <Td>

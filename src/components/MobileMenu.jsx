@@ -21,6 +21,7 @@ import { FaHome } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa6";
 import { IoSettingsOutline, IoStorefrontOutline } from "react-icons/io5";
 import { PiBowlFoodLight } from "react-icons/pi";
+import { IoAnalyticsOutline } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
 import { Nav } from "./SideBar";
@@ -100,6 +101,11 @@ const MobileMenu = ({ isOpen, onClose, onOpen }) => {
                   icon={<BsSend size={20} />}
                   title="Payouts"
                   path="/payouts"
+                />
+                <Nav
+                  icon={<IoAnalyticsOutline size={20} />}
+                  title="Analytics"
+                  path="/analytics"
                 />
                 <Nav
                   icon={<FaRegUser size={24} />}

@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Wrapper from "../../components/Wrapper";
-import { Flex, Box, Switch, Spinner, Text, HStack } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Switch,
+  Spinner,
+  Text,
+  HStack,
+  Select,
+} from "@chakra-ui/react";
 import Overview from "./Overview";
 import HomeChart from "./HomeChart";
 import { useRestaurant } from "../../context/restaurant";
@@ -11,14 +19,18 @@ import OrderTable from "../orders/OrderTable";
 import OrderList from "../orders/OrderList";
 import { toast } from "react-toastify";
 import { usePost } from "../../hooks/usePost";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
+  const [filter, setFilter] = useState("all time");
   const { activeRestaurant, selectRestaurant } = useRestaurant();
+
+  const queryclient = useQueryClient();
 
   const restaurantId = activeRestaurant?._id;
 
   const { data, isPending } = useGet(
-    `${url}/v1/overview?restaurant=${restaurantId}`,
+    `${url}/v1/overview?restaurant=${restaurantId}&filter=${filter}`,
     `menu-${restaurantId}`
   );
 
@@ -41,6 +53,10 @@ export default function Home() {
     onSuccess: handleSuccess,
   });
 
+  useEffect(() => {
+    queryclient.invalidateQueries({ queryKey: [`menu-${restaurantId}`] });
+  }, [filter, restaurantId, queryclient]);
+
   return (
     <Wrapper>
       <Flex
@@ -55,26 +71,50 @@ export default function Home() {
           completed={result?.completedOrders}
           isLoading={isPending}
         />
-        <HStack align="flex-end" w="100%">
-          <Text
-            fontSize="sm"
-            fontWeight="500"
-            color={
-              activeRestaurant?.isOpen === "open" ? "green.500" : "red.500"
-            }>
-            {activeRestaurant?.isOpen ? "Open" : "Closed"}
-          </Text>
-          {toggleHandler.isPending ? (
-            <Spinner colorScheme="orange" size="sm" />
-          ) : (
-            <Switch
-              isChecked={activeRestaurant?.isOpen}
-              onChange={() => {
-                toggleHandler.mutate({});
-              }}
-              colorScheme="orange"
-            />
-          )}
+        <HStack w="100%" justify="space-between">
+          <Box maxW="200px">
+            <Select
+              bg="white"
+              outline="none"
+              focusBorderColor="#FFF0E6"
+              placeholder="Date"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}>
+              {[
+                "today",
+                "yesterday",
+                "this week",
+                "this month",
+                "this year",
+                "all time",
+              ].map((cat, idx) => (
+                <option key={idx} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </Select>
+          </Box>
+          <HStack align="flex-end">
+            <Text
+              fontSize="sm"
+              fontWeight="500"
+              color={
+                activeRestaurant?.isOpen === "open" ? "green.500" : "red.500"
+              }>
+              {activeRestaurant?.isOpen ? "Open" : "Closed"}
+            </Text>
+            {toggleHandler.isPending ? (
+              <Spinner colorScheme="orange" size="sm" />
+            ) : (
+              <Switch
+                isChecked={activeRestaurant?.isOpen}
+                onChange={() => {
+                  toggleHandler.mutate({});
+                }}
+                colorScheme="orange"
+              />
+            )}
+          </HStack>
         </HStack>
         <HomeChart data={result?.chartData} />
         {!isPending && (

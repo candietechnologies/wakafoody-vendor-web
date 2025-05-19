@@ -85,12 +85,14 @@ const OrderCard = ({ order, w }) => {
           onClick={viewOrder}
           noOfLines={1}
           textTransform="capitalize"
+          fontSize="14px"
           style={{ fontFamily: "Poppins" }}>
           <strong>Customer:</strong> {user?.firstName} {user?.lastName}
         </Text>
 
         <Text
           onClick={viewOrder}
+          fontSize="14px"
           noOfLines={1}
           textTransform="capitalize"
           style={{ fontFamily: "Poppins" }}>
@@ -99,6 +101,7 @@ const OrderCard = ({ order, w }) => {
 
         <Text
           onClick={viewOrder}
+          fontSize="14px"
           noOfLines={1}
           style={{ fontFamily: "Poppins" }}>
           <strong>Price:</strong> ₦{amountFormater(order?.price || 0)}
@@ -106,12 +109,14 @@ const OrderCard = ({ order, w }) => {
 
         <Text
           onClick={viewOrder}
+          fontSize="14px"
           noOfLines={1}
           style={{ fontFamily: "Poppins" }}>
           <strong>Quantity:</strong> {order?.quantity}
         </Text>
         <Text
           onClick={viewOrder}
+          fontSize="14px"
           noOfLines={1}
           style={{ fontFamily: "Poppins" }}>
           <strong>Date:</strong> {formatDate(order?.date)},{" "}

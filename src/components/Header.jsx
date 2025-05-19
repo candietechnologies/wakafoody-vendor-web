@@ -79,6 +79,12 @@ export default function Header() {
             <MenuList>
               <MenuItem
                 onClick={() => {
+                  navigate("/");
+                }}>
+                Dashboard
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
                   navigate("/orders");
                 }}>
                 Orders

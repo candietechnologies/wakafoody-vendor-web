@@ -89,21 +89,30 @@ const OrderTable = ({ list }) => {
             <>
               {list?.map((order, index) => (
                 <Tr key={order.id}>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>{index + 1}</Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
+                    {index + 1}
+                  </Td>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
                     {order?.orderId}
                   </Td>
                   <Td
+                    whiteSpace="nowrap"
                     fontSize={{ lg: "14px", base: "13px" }}
                     textTransform="capitalize">
                     {order?.user?.length > 0
                       ? `${order?.user[0]?.firstName} ${order?.user[0]?.lastName}`
                       : "-"}
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
                     ₦{amountFormater(order.price || 0)}
                   </Td>
-                  <Td>
+                  <Td whiteSpace="nowrap">
                     <Box display="flex" alignItems="center">
                       <Avatar
                         src={order.menu.image}
@@ -117,7 +126,7 @@ const OrderTable = ({ list }) => {
                       </Text>
                     </Box>
                   </Td>
-                  <Td>
+                  <Td whiteSpace="nowrap">
                     <Badge
                       colorScheme={statusColor[order.status]}
                       fontSize="12px"
@@ -128,7 +137,9 @@ const OrderTable = ({ list }) => {
                       {order.status.toUpperCase()}
                     </Badge>
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(order.date)},{formatTime(order.date)}
                   </Td>
                   <Td>

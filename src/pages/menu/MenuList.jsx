@@ -101,24 +101,30 @@ const MenuList = ({ menus = [], categories, collections }) => {
                     />
                   </Td>
                   <Td
+                    whiteSpace="nowrap"
                     fontSize={{ lg: "14px", base: "13px" }}
                     textTransform="capitalize"
                     fontWeight="medium">
                     {menu.name}
                   </Td>
                   <Td
+                    whiteSpace="nowrap"
                     fontSize={{ lg: "14px", base: "13px" }}
                     textTransform="capitalize"
                     fontWeight="medium">
                     {menu.category}
                   </Td>
                   <Td
+                    whiteSpace="nowrap"
                     fontSize={{ lg: "14px", base: "13px" }}
                     textTransform="capitalize"
                     fontWeight="medium">
                     {menu.collectionName}
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }} isNumeric>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    isNumeric>
                     ₦{amountFormater(menu.price || 0)}
                   </Td>
                   <Td>
@@ -129,10 +135,15 @@ const MenuList = ({ menus = [], categories, collections }) => {
                       {menu.inStock ? "AVAILABLE" : "SOLDOUT"}
                     </Badge>
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }} isNumeric>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}
+                    isNumeric>
                     {menu.totalUnitsSold}
                   </Td>
-                  <Td fontSize={{ lg: "14px", base: "13px" }}>
+                  <Td
+                    whiteSpace="nowrap"
+                    fontSize={{ lg: "14px", base: "13px" }}>
                     {formatDate(menu.createdAt)}, {formatTime(menu.createdAt)}
                   </Td>
                   <Td isNumeric>{menu.discount || 0}%</Td>
