@@ -25,6 +25,7 @@ import { IoAnalyticsOutline } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
 import { Nav } from "./SideBar";
+import { MdOutlineDiscount } from "react-icons/md";
 
 const MobileMenu = ({ isOpen, onClose, onOpen }) => {
   const { activeRestaurant } = useRestaurant();
@@ -101,6 +102,11 @@ const MobileMenu = ({ isOpen, onClose, onOpen }) => {
                   icon={<BsSend size={20} />}
                   title="Payouts"
                   path="/payouts"
+                />
+                <Nav
+                  icon={<MdOutlineDiscount size={20} />}
+                  title="Discounts"
+                  path="/promotions"
                 />
                 <Nav
                   icon={<IoAnalyticsOutline size={20} />}

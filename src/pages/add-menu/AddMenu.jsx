@@ -267,10 +267,7 @@ const AddMenu = () => {
           {menuId ? "Edit" : "Add New"} Menu
         </Heading>
 
-        <form
-          // style={{ width: "100%", height: "100%" }}
-          className="p-[1rem]"
-          onSubmit={handleSubmit(onSubmit)}>
+        <form className="p-[1rem]" onSubmit={handleSubmit(onSubmit)}>
           <Flex w="100%" align="start" direction="column" gap="1rem">
             {/* Image */}
             <FormControl required={true}>

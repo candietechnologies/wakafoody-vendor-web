@@ -103,6 +103,18 @@ export default function Header() {
               </MenuItem>
               <MenuItem
                 onClick={() => {
+                  navigate("/promotions");
+                }}>
+                Discounts
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/analytics");
+                }}>
+                Analytics
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
                   navigate("/profile");
                 }}>
                 Profile

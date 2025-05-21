@@ -69,15 +69,21 @@ const MenuList = ({ menus = [], categories, collections }) => {
             <Tr>
               <Th>S/N</Th>
               <Th>Image</Th>
-              <Th>Name</Th>
-              <Th>Category</Th>
-              <Th>collection</Th>
-              <Th isNumeric>Price</Th>
-              <Th>Status</Th>
-              <Th isNumeric>Total Sold</Th>
-              <Th>Date</Th>
-              <Th isNumeric>Discount (%)</Th>
-              <Th>Action</Th>
+              <Th whiteSpace="nowrap">Name</Th>
+              <Th whiteSpace="nowrap">Category</Th>
+              <Th whiteSpace="nowrap">collection</Th>
+              <Th whiteSpace="nowrap" isNumeric>
+                Price
+              </Th>
+              <Th whiteSpace="nowrap">Status</Th>
+              <Th whiteSpace="nowrap" isNumeric>
+                Total Sold
+              </Th>
+              <Th whiteSpace="nowrap">Date</Th>
+              <Th whiteSpace="nowrap" isNumeric>
+                Discount (%)
+              </Th>
+              <Th whiteSpace="nowrap">Action</Th>
             </Tr>
           </Thead>
           <Tbody>
