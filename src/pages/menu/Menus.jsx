@@ -121,10 +121,11 @@ export default function Menus() {
 
     const filterByName = (list) =>
       list?.filter((el) => el.name?.toLowerCase().includes(term)) || [];
+    const menus = menuData?.data || [];
 
     if (filterTerm) {
       setMenuList(
-        menuData?.data?.filter((el) =>
+        menus?.filter((el) =>
           filterTerm === "available"
             ? el.inStock
             : filterTerm === "sold out"
@@ -134,15 +135,15 @@ export default function Menus() {
       );
     } else {
       setMenuList(
-        menuData?.data?.filter(
+        menus?.filter(
           (el) =>
             el.name?.toLowerCase().includes(term) ||
             el.description?.toLowerCase().includes(term)
         ) || []
       );
-      setMenuOptionList(filterByName(menuOptionData?.data?.data));
-      setOptionList(filterByName(optionData?.data?.data));
-      setPackList(filterByName(packData?.data?.data));
+      setMenuOptionList(filterByName(menuOptionData?.data));
+      setOptionList(filterByName(optionData?.data));
+      setPackList(filterByName(packData?.data));
     }
   }, [search, menuData, menuOptionData, optionData, packData, filter]);
 
@@ -168,6 +169,7 @@ export default function Menus() {
       <AddMenuOptionModal
         isOpen={meenuOptionsModal.isOpen}
         onClose={meenuOptionsModal.onClose}
+        options={optionData?.data || []}
       />
       <AddOption isOpen={optionModal.isOpen} onClose={optionModal.onClose} />
       <AddCollectionModal

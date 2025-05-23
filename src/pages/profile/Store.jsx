@@ -13,9 +13,11 @@ import {
 import { useRestaurant } from "../../context/restaurant";
 import { formatDate } from "../../utils/format-date";
 import { formatTime } from "../../utils/formatTime";
+import CopyRestaurantURL from "./CopyUrl";
 
 const StoreProfile = () => {
   const { activeRestaurant } = useRestaurant();
+  console.log(activeRestaurant);
 
   const statusColor = activeRestaurant?.status === "active" ? "green" : "red";
 
@@ -68,6 +70,8 @@ const StoreProfile = () => {
         />
         <Info label="Username" value={activeRestaurant?.username} />
       </VStack>
+
+      {activeRestaurant?.status === "active" && <CopyRestaurantURL />}
     </Box>
   );
 };

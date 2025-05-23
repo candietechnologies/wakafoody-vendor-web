@@ -33,6 +33,7 @@ const Profile = lazy(() => import("./pages/profile/Profile"));
 const Settings = lazy(() => import("./pages/settings/Settings"));
 const Analytics = lazy(() => import("./pages/analytics/Analytics"));
 const Promotion = lazy(() => import("./pages/promotion/Promotion"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
@@ -82,6 +83,7 @@ const routes = createRoutesFromElements(
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="*" element={<NotFound />} />
     </Route>
   </Route>
 );
