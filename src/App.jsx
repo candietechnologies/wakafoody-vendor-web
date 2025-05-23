@@ -11,6 +11,8 @@ import React, { lazy, Suspense } from "react";
 import "./App.css";
 import Spinner from "./components/Spinner";
 import { useAuth } from "./context/auth";
+import ErrorFallback from "./components/ErrorFallback";
+import { ErrorBoundary } from "react-error-boundary";
 
 const Login = lazy(() => import("./pages/login/Login"));
 const Register = lazy(() => import("./pages/register/Register"));
@@ -93,7 +95,9 @@ const router = createBrowserRouter(routes);
 function App() {
   return (
     <Suspense fallback={<Spinner />}>
-      <RouterProvider router={router} />
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
     </Suspense>
   );
 }

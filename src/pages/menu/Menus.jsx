@@ -141,9 +141,9 @@ export default function Menus() {
             el.description?.toLowerCase().includes(term)
         ) || []
       );
-      setMenuOptionList(filterByName(menuOptionData?.data));
-      setOptionList(filterByName(optionData?.data));
-      setPackList(filterByName(packData?.data));
+      setMenuOptionList(filterByName(menuOptionData?.data || []));
+      setOptionList(filterByName(optionData?.data || []));
+      setPackList(filterByName(packData?.data || []));
     }
   }, [search, menuData, menuOptionData, optionData, packData, filter]);
 

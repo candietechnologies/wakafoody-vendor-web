@@ -17,7 +17,6 @@ import CopyRestaurantURL from "./CopyUrl";
 
 const StoreProfile = () => {
   const { activeRestaurant } = useRestaurant();
-  console.log(activeRestaurant);
 
   const statusColor = activeRestaurant?.status === "active" ? "green" : "red";
 
