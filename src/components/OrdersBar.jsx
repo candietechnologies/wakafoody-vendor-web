@@ -6,8 +6,9 @@ import {
   VStack,
   Box,
   Text,
+  CloseButton,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import OrderCard from "./OrderCard";
 import useGet from "../hooks/useGet";
 import { url } from "../utils/lib";
@@ -17,6 +18,7 @@ import OrderSkeleton from "../pages/orders/OrderSkeleton";
 import { useNavigate } from "react-router-dom";
 
 export default function OrdersBar() {
+  const [visible, setVisible] = useState(true);
   const queryClient = useQueryClient();
   const { activeRestaurant } = useRestaurant();
   const restaurantId = activeRestaurant?._id;
@@ -35,7 +37,7 @@ export default function OrdersBar() {
 
   return (
     <Flex
-      display={{ lg: "flex", base: "none" }}
+      display={visible ? { lg: "flex", base: "none" } : "none"}
       align="start"
       direction="column"
       w="300px"
@@ -44,7 +46,12 @@ export default function OrdersBar() {
       overflowY="scroll"
       boxShadow="lg"
       gap="1rem"
+      position="relative"
       p="1rem">
+      <Flex w="100%" align="end" justify="end">
+        <CloseButton onClick={() => setVisible(false)} colorScheme="red" />
+      </Flex>
+
       <Flex w="100%" align="center" gap="0.4rem" justify="space-between">
         <Heading
           style={{ fontFamily: "Poppins" }}
